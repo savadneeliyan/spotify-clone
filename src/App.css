@@ -1,38 +1,204 @@
-.App {
-  text-align: center;
+*{
+  box-sizing: border-box;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+a{
+  text-decoration: none;
 }
+/* Home.js */
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.Home{
   display: flex;
-  flex-direction: column;
+}
+
+.rightContainer::-webkit-scrollbar{
+  width: 5px;
+}
+.rightContainer::-webkit-scrollbar-thumb:hover {
+  background: #e80303 !important;
+}
+.rightContainer::-webkit-scrollbar-thumb {
+  background: #5a5a5a !important;
+  border-radius: 10px;
+}
+.rightContainer{
+  flex: 3;
+  position: relative;
+  max-height: calc(100vh - 90px);
+  background-color: rgb(221, 255, 127);
+  overflow-y: scroll;
+}
+.contents{
+  height: 200vh;
+  padding: 0 15px;
+}
+.top-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.player{
+  height: 90px;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.385);
+  position: fixed;
+  bottom: 0;
+}
+
+/* sidebar */
+
+.sidebar{
+  flex: 1;
+  padding:0 15px;
+  padding-top: 16px;
+  height: calc(100vh - 90px);
+  background-color: aquamarine;
+}
+.logo{
+  max-width: 130px;
+}
+
+ul{
+  padding: 0;
+}
+ul li {
+  list-style-type: none;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+}
+ul li span{
+  overflow: auto;
+}
+
+
+.bottom{
+  padding-bottom: 15px;
+  border-bottom: 1px solid #282828;
+}
+
+.iconbox{
+  height: 24px;
+  width: 24px;
+  background-color: blanchedalmond;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  border-radius: 2px;
+}
+.iconbox.color{
+  background: linear-gradient(135deg,#450af5,#c4efd9);
 }
 
-.App-link {
-  color: #61dafb;
+
+/* navbar  */
+
+.navbar{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 15px;
+}
+.navbar.sticky{
+  position: sticky;
+  top: 0;
+  right: 0;
+  left: 0;
+  background-color: #000000;
+  z-index: 999;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.controls{
+  display: flex;
+  gap: 40px;
+}
+
+.icons{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  background-color: rgba(0,0,0,.7);
+  overflow: hidden;
+}
+img{
+  width: 100%;
+  height: 100%;
+}
+.icons svg path{
+  fill: #fff;
+}
+
+
+/* playlist */
+
+.paylist-flex{
+  display: flex;
+  gap: 24px;
+}
+.playlist-container{
+  max-width: 210px;
+  width: 100%;
+  background-color: #282828;
+  padding: 15px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.playlist-img img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.playlist-img{
+  height: 177px;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 16px;
+}
+.play-icon{
+  position: absolute;
+  background-color: #1ed760;
+  border-radius: 50%;
+  height: 48px;
+  width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: 10px;
+  right: 10px;
+  opacity: 0;
+  transition: 0.5s ease;
+}
+
+.playlist-container:hover .play-icon{
+  opacity: 1;
+}
+.playlist-container:hover {
+  background-color:#282828;
+}
+.play-icon svg{
+  fill: #000;
+}
+.playlist-container h2{
+  margin: 0;
+  color: #fff;
+  font-size: 16px;
+}
+.playlist-container p{
+  margin: 0;
+  color: #a3a3a3;
+  font-size: 14px;
+}
+
+/* list music */
+
+.paylist-grid{
+  display: grid;
+  grid-template-columns: repeat(5,1fr);
+  gap: 15px;
 }
