@@ -3,10 +3,15 @@ import HomePage from './Pages/HomePage';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import {useEffect, useState } from 'react';
-import MusicListing from './components/MusicListing';
 import axios from 'axios';
 import ListMusic from './components/ListMusic';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes  } from 'react-router-dom';
+import PlayListPage from './components/PlayListPage';
+import Player from './components/Player';
+import SinglePage from './components/SinglePage';
+import LyricsPage from './components/LyricsPage';
+import SearchPage from './components/SearchPage';
+import LikedSongs from './components/LikedSongs';
 
 
 
@@ -53,16 +58,19 @@ function App() {
           <div className="rightContainer" onScroll={handleScroll}>
             <Navbar data={data} scrollPosition={scrollPosition}/>
             <div className="contents">
-              {/* <Svg/> */}
               <Routes>
                 <Route path="/" element={<HomePage/>} /> 
                 <Route path="/music" element={<ListMusic/>} /> 
+                <Route path="/playlist" element={<PlayListPage/>} /> 
+                <Route path="/single" element={<SinglePage/>} /> 
+                <Route path="/lyrics" element={<LyricsPage/>} /> 
+                <Route path="/search" element={<SearchPage/>} /> 
+                <Route path="/liked" element={<LikedSongs/>} /> 
               </Routes>
-              {/* <MusicListing id={id}/> */}
               
             </div>
           </div>
-          <div className="player"></div>
+          <Player/>
       </div>
     </div>
   );

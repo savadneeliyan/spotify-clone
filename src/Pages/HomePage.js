@@ -1,14 +1,21 @@
 import React from 'react'
 import MusicListing from '../components/MusicListing'
+import TopPlaylists from '../components/TopPlaylists'
+import { BestofArtists, MadeForYou, YourShow, discovermore, indiabest } from '../contents'
+
+
+
+
 
 function HomePage({id}) {
   return (
     <>
-      <MusicListing id={id} title="Made for you"/>
-      <MusicListing id={id} title="discover more"/>
-      <MusicListing id={id} title="your top mix"/>
-      <MusicListing id={id} title="india best"/>
-      <MusicListing id={id} title="more of what you like"/>
+      <TopPlaylists/>
+      <MusicListing id={id} title="Made for you" data={MadeForYou} />
+      <MusicListing id={id} title="discover more" data={discovermore}/>
+      <MusicListing id={id} title="your Shows" data={YourShow}/>
+      <MusicListing id={id} title="india's best" data={indiabest}/>
+      <MusicListing id={id} title="Best Of Artists" data={BestofArtists} />
     </>
   )
 }
