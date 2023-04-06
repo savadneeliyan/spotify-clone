@@ -1,31 +1,43 @@
-import React from 'react'
-import { BestofArtists, MadeForYou, YourShow, discovermore, indiabest } from '../contents'
+import React, { useState } from 'react'
+import { ArtistSongs, BestofArtists, Lyrics, MadeForYou, Track, YourShow, discovermore, indiabest } from '../contents'
 import MusicListing from './MusicListing'
 import { Link } from 'react-router-dom';
 
 
 function SinglePage() {
+    const time = (millis) => {
+        var minutes = Math.floor(millis / 60000);
+        var seconds = ((millis % 60000) / 1000).toFixed(0);
+        return minutes + ":" + (seconds < 10 ? '0' : '') + seconds;
+      }
+
+      const [readmore , setReadmore] = useState(true);
+      const [length , setlength] = useState(7);
+
+      const handleShowmore = () =>{
+        readmore ? setlength(ArtistSongs.data.artist.discography.singles.items.length) : setlength(7);
+        setReadmore(!readmore);
+      }
+    // console.log(Track)
   return (
     <div className='singlepage'>
         <div className="play-list-top">
             <div className="playlist-img">
-                <img src="https://dailymix-images.scdn.co/v2/img/ab6761610000e5eb18045f4451e50f23177dd524/2/en/default" alt="" />
+                <img src={Track[0].album?.images[0].url} alt="" />
             </div>
             <div className="names-section">
                 <span>Playlist</span>
-                <h2>discover weekly</h2>
-                <p>Your weekly mixtape of fresh music. Enjoy new music and deep cuts picked for you. Updates every Monday.</p>
+                <h2>{Track[0].name}</h2>
                 <div className="discription-container">
-                    <svg role="img" height="24" width="24" fill='#1ed760' aria-hidden="true" viewBox="0 0 24 24" data-encore-id="icon" class="Svg-sc-ytk21e-0 hyZePi">
-                        <path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22zm5.045 15.866a.686.686 0 0 1-.943.228c-2.583-1.579-5.834-1.935-9.663-1.06a.686.686 0 0 1-.306-1.337c4.19-.958 7.785-.546 10.684 1.226a.686.686 0 0 1 .228.943zm1.346-2.995a.858.858 0 0 1-1.18.282c-2.956-1.817-7.464-2.344-10.961-1.282a.856.856 0 0 1-1.11-.904.858.858 0 0 1 .611-.737c3.996-1.212 8.962-.625 12.357 1.462a.857.857 0 0 1 .283 1.179zm.116-3.119c-3.546-2.106-9.395-2.3-12.78-1.272a1.029 1.029 0 0 1-.597-1.969c3.886-1.18 10.345-.952 14.427 1.471a1.029 1.029 0 0 1-1.05 1.77z"></path>
-                    </svg>
-                    <p>made for <a href="">mohammed savad . </a>30 songs,about 1hr 45 mins</p>
+                    
+                    <img className='artistImg' src={Track[0].album?.images[0].url} alt="" />
+                    <p> <a href={`/artists/${Track[0].artists[0].id}`}>{Track[0].artists[0].name} . </a>{Track[0].track_number} songs . {Track[0].album.release_date.slice(0,4)} . about { time(Track[0].duration_ms)}</p>
                 </div>
             </div>
         </div>
         <div className="play-list-center">
             <div className='round'>
-                <svg role="img" height="28" width="28" aria-hidden="true" viewBox="0 0 24 24" data-encore-id="icon" class="Svg-sc-ytk21e-0 gQUQL">
+                <svg role="img" height="28" width="28" aria-hidden="true" viewBox="0 0 24 24" data-encore-id="icon" className="Svg-sc-ytk21e-0 gQUQL">
                     <path d="M5.7 3a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7H5.7zm10 0a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7h-2.6z"></path>
                 </svg>
             </div>
@@ -40,167 +52,55 @@ function SinglePage() {
             </svg>
         </div>
         <div className="profilecontainer">
-            <img src="https://i.scdn.co/image/ab6761610000e5eb73704d52d8c0bc8a2d852ece" alt="" />
+            <img src={Track[0].album?.images[0].url} alt="" />
             <div>
                 <h2>Artist</h2>
-                <h3>Jasleen Royal</h3>
+                <h3><a href={`/artists/${Track[0].artists[0].id}`}>{Track[0].artists[0].name} </a></h3>
             </div>
         </div>
         <div className='single-lyrics'>
             <h2>Lyrics</h2>
-            <p>ਰੂਠੀ ਹੈ ਸ਼ਬ ਤੇ, ਰੱਬਾ</p>
-            <p>रब्बा, दिल भी है रूठा</p>
-            <p>सब कुछ है बिखरा-बिखरा</p>
-            <p>बिखरा सा, रूठा-रूठा</p>
-            <p>चुप माही, चुप है राँझा, बोलें कैसे वे ना जा?</p>
-            <p>बोलें कैसे वे ना जा? आजा-आजा</p>
-            <p>बोलें कैसे वे ना जा? बोलें कैसे वे ना जा?</p>
-            <p>चुप माही, चुप है राँझा, आजा-आजा</p>
-            <p>ਵੇ ਮੇਰਾ ਢੋਲਾ ਨਹੀਂ ਆਇਆ, ਢੋਲਾ</p>
-            <p>ਵੇ ਮੇਰਾ ਢੋਲਾ ਨਹੀਂ ਆਇਆ, ਢੋਲਾ</p>
-            <p>ਵੇ ਮੇਰਾ ਢੋਲਾ ਨਹੀਂ ਆਇਆ, ਢੋਲਾ</p>
+            {Lyrics.lyrics.lines.map((line, i)=>{
+                return <p key={i}>{line.words}</p>
+            })}
+            
 
         </div>
         <div className="single-bottom">
             <h3>Popular Tracks By </h3>
-            <h2>Jasleen Royal</h2>
+            <h2>{Track[0].artists[0].name}</h2>
         </div>
         
         <div className='play-list-down'>
-            <Link to="/single">
-                <div className="columns">
-                    <div className="colums"><span>1</span> 
-                        <svg role="img" height="24" width="24" aria-hidden="true" className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g" viewBox="0 0 24 24" data-encore-id="icon">
-                            <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
-                        </svg>
-                    </div>
-                    <div className="colums-container">
-                        <img src="https://i.scdn.co/image/ab67616d000048515f68e66aec5f4e05ccbc9cdb" alt="" />
-                        <div className="colum-content">
-                            <h3>kanmani anbodu</h3>
-                        </div>    
-                    </div>
-                    <div className="album-name">
-                        9854625
-                    </div>
-                    
-                    <div className="time">
-                        3:32
-                    </div>
-                </div>
-            </Link>
-            <Link to="/single">
-                <div className="columns">
-                    <div className="colums"><span>2</span> 
-                        <svg role="img" height="24" width="24" aria-hidden="true" className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g" viewBox="0 0 24 24" data-encore-id="icon">
-                            <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
-                        </svg>
-                    </div>
-                    <div className="colums-container">
-                        <img src="https://i.scdn.co/image/ab67616d000048515f68e66aec5f4e05ccbc9cdb" alt="" />
-                        <div className="colum-content">
-                            <h3>kanmani anbodu</h3>
-                        </div>    
-                    </div>
-                    <div className="album-name">
-                        9854625
-                    </div>
-                    
-                    <div className="time">
-                        3:32
-                    </div>
-                </div>
-            </Link>
-            <Link to="/single">
-                <div className="columns">
-                    <div className="colums"><span>3</span> 
-                        <svg role="img" height="24" width="24" aria-hidden="true" className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g" viewBox="0 0 24 24" data-encore-id="icon">
-                            <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
-                        </svg>
-                    </div>
-                    <div className="colums-container">
-                        <img src="https://i.scdn.co/image/ab67616d000048515f68e66aec5f4e05ccbc9cdb" alt="" />
-                        <div className="colum-content">
-                            <h3>kanmani anbodu</h3>
-                        </div>    
-                    </div>
-                    <div className="album-name">
-                        9854625
-                    </div>
-                    
-                    <div className="time">
-                        3:32
-                    </div>
-                </div>
-            </Link>
-            <Link to="/single">
-                <div className="columns">
-                    <div className="colums"><span>4</span> 
-                        <svg role="img" height="24" width="24" aria-hidden="true" className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g" viewBox="0 0 24 24" data-encore-id="icon">
-                            <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
-                        </svg>
-                    </div>
-                    <div className="colums-container">
-                        <img src="https://i.scdn.co/image/ab67616d000048515f68e66aec5f4e05ccbc9cdb" alt="" />
-                        <div className="colum-content">
-                            <h3>kanmani anbodu</h3>
-                        </div>    
-                    </div>
-                    <div className="album-name">
-                        9854625
-                    </div>
-                    
-                    <div className="time">
-                        3:32
-                    </div>
-                </div>
-            </Link>
-            <Link to="/single">
-                <div className="columns">
-                    <div className="colums"><span>5</span> 
-                        <svg role="img" height="24" width="24" aria-hidden="true" className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g" viewBox="0 0 24 24" data-encore-id="icon">
-                            <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
-                        </svg>
-                    </div>
-                    <div className="colums-container">
-                        <img src="https://i.scdn.co/image/ab67616d000048515f68e66aec5f4e05ccbc9cdb" alt="" />
-                        <div className="colum-content">
-                            <h3>kanmani anbodu</h3>
-                        </div>    
-                    </div>
-                    <div className="album-name">
-                        9854625
-                    </div>
-                    
-                    <div className="time">
-                        3:32
-                    </div>
-                </div>
-            </Link>
-            <Link to="/single">
-                <div className="columns">
-                    <div className="colums"><span>6</span> 
-                        <svg role="img" height="24" width="24" aria-hidden="true" className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g" viewBox="0 0 24 24" data-encore-id="icon">
-                            <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
-                        </svg>
-                    </div>
-                    <div className="colums-container">
-                        <img src="https://i.scdn.co/image/ab67616d000048515f68e66aec5f4e05ccbc9cdb" alt="" />
-                        <div className="colum-content">
-                            <h3>kanmani anbodu</h3>
-                        </div>    
-                    </div>
-                    <div className="album-name">
-                        9854625
-                    </div>
-                    
-                    <div className="time">
-                        3:32
-                    </div>
-                </div>
-            </Link>
+            {
+                ArtistSongs.data.artist.discography.singles.items.slice(0,length).map((artist,i) => (
+                    <Link to={`/track/${artist.releases.items[0].id}`} key={i}>
+                        <div className="columns">
+                            <div className="colums"><span>{i+1}</span> 
+                                <svg role="img" height="24" width="24" aria-hidden="true" className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g" viewBox="0 0 24 24" data-encore-id="icon">
+                                    <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
+                                </svg>
+                            </div>
+                            <div className="colums-container">
+                                <img src={artist.releases.items[0].coverArt.sources[0].url} alt="" />
+                                <div className="colum-content">
+                                    <h3>{artist.releases.items[0].name}</h3>
+                                </div>    
+                            </div>
+                            <div className="album-name">
+                                9854625
+                            </div>
+                            
+                            <div className="time">
+                                3:32
+                            </div>
+                        </div>
+                    </Link>
+                ))
+            }
+           
             <div className="list-bottom">
-                <a href="" className="readmore">Read More</a>
+                <a onClick={handleShowmore} className="readmore">{readmore ? "See More" : "See Less "}</a>
             </div>
             <MusicListing  title="Made for you" data={MadeForYou} />
             <MusicListing  title="discover more" data={discovermore}/>

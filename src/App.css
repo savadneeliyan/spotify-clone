@@ -160,6 +160,7 @@ ul li span{
   height: 28px;
   background-color: rgba(0,0,0,.7);
   overflow: hidden;
+  cursor: pointer;
 }
 img{
   width: 100%;
@@ -296,6 +297,11 @@ img{
   text-transform: capitalize;
   line-height: 58px;
   margin: 0;
+}
+img.artistImg {
+  width: 30px;
+  border-radius: 50%;
+  height: 30px;
 }
 .discription-container{
   display: flex;
@@ -609,6 +615,7 @@ img{
   gap: 20px;
   position: absolute;
   right: 20%;
+  z-index: 9;
 }
 .profilecontainer h2,.profilecontainer h3{
   margin: 0;
@@ -647,6 +654,7 @@ img{
 }
 .readmore{
   color: #ffffffb3;
+  cursor: pointer;
 }
 
 /* lyrics */
@@ -706,3 +714,4 @@ img{
   flex-wrap: wrap;
   gap: 15px;
 }
+

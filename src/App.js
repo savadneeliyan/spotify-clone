@@ -55,14 +55,14 @@ function App() {
     <div className="App">
       <div className='Home'>
           <Sidebar/>
-          <div className="rightContainer" onScroll={handleScroll}>
+          <div className="rightContainer" >
             <Navbar data={data} scrollPosition={scrollPosition}/>
             <div className="contents">
               <Routes>
                 <Route path="/" element={<HomePage/>} /> 
                 <Route path="/music" element={<ListMusic/>} /> 
                 <Route path="/playlist" element={<PlayListPage/>} /> 
-                <Route path="/single" element={<SinglePage/>} /> 
+                <Route path="/track/:id" element={<SinglePage/>} /> 
                 <Route path="/lyrics" element={<LyricsPage/>} /> 
                 <Route path="/search" element={<SearchPage/>} /> 
                 <Route path="/liked" element={<LikedSongs/>} /> 
