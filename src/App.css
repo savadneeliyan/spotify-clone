@@ -1,3 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 *{
   box-sizing: border-box;
 }
@@ -161,6 +166,15 @@ ul li span{
   background-color: rgba(0,0,0,.7);
   overflow: hidden;
   cursor: pointer;
+}
+.icon-container{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #000;
+  color: #fff;
+  padding: 1rem;
+  border-radius: 30px;
 }
 img{
   width: 100%;

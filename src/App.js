@@ -12,66 +12,71 @@ import SinglePage from './components/SinglePage';
 import LyricsPage from './components/LyricsPage';
 import SearchPage from './components/SearchPage';
 import LikedSongs from './components/LikedSongs';
+import MusicPlayer from './components/MusicPlayer';
+import Login from './components/Login';
+import { useStateProvider } from "./utils/StateProvider";
+import { reducerCases } from "./utils/Constants";
 
 
 
 function App() {
 
+const [{ token }, dispatch] = useStateProvider();
+
+useEffect(() => {
+  const hash = window.location.hash;
+  if (hash) {
+    const token = hash.substring(1).split("&")[0].split("=")[1];
+    dispatch({ type: reducerCases.SET_TOKEN, token });
+
+    const getuserinfo = async () => {
+      const { data } = await axios.get("https://api.spotify.com/v1/me",
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+            "content-Type": "application/json",
+          },
+        }
+      );
+      const userInfo = {
+        userId: data.id,
+        username: data.display_name,
+      };
+      dispatch({ type: reducerCases.SET_USER, userInfo });
+    }
+    getuserinfo();
+
+  }
 
   
-    const [data ,setData] = useState();
-    const [id , setId] = useState('nocopyrightsounds');
-    useEffect(() => { 
-        // const options = {
-        //   method: 'GET',
-        //   url: 'https://spotify23.p.rapidapi.com/user_profile/',
-        //   params: {id: id, playlistLimit: '10', artistLimit: '10'},
-        //   headers: {
-        //       'X-RapidAPI-Key': '5bd207f698msh17b3b213c1c7cf8p1e3e24jsn7e2107bb0ef5',
-        //       'X-RapidAPI-Host': 'spotify23.p.rapidapi.com'
-        //   }
-        
-        // }
-        // setId('nocopyrightsounds');
-
-        // axios.request(options).then(function (response) {
-        //   setData(response.data)
-        // }).catch(function (error) {
-        //   console.error(error);
-        // });
-        
-    }, [])
-  
-
-    const [scrollPosition, setScrollPosition] = useState(false);
-
-    const handleScroll = (e) => {
-        setScrollPosition(e.target.scrollTop > 1);
-    };
-
+}, [token, dispatch]);
 
 
   return (
     <div className="App">
-      <div className='Home'>
-          <Sidebar/>
-          <div className="rightContainer" >
-            <Navbar data={data} scrollPosition={scrollPosition}/>
-            <div className="contents">
-              <Routes>
-                <Route path="/" element={<HomePage/>} /> 
-                <Route path="/music" element={<ListMusic/>} /> 
-                <Route path="/playlist" element={<PlayListPage/>} /> 
-                <Route path="/track/:id" element={<SinglePage/>} /> 
-                <Route path="/lyrics" element={<LyricsPage/>} /> 
-                <Route path="/search" element={<SearchPage/>} /> 
-                <Route path="/liked" element={<LikedSongs/>} /> 
-              </Routes>
-              
-            </div>
+      {token ? <div className="Home">
+        <Sidebar />
+        <div className="rightContainer">
+          <Navbar  />
+          <div className="contents">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/music" element={<ListMusic />} />
+              <Route path="/playlist" element={<PlayListPage />} />
+              <Route path="/track/:id" element={<SinglePage />} />
+              <Route path="/lyrics" element={<LyricsPage />} />
+              <Route path="/search" element={<SearchPage />} />
+              <Route path="/liked" element={<LikedSongs />} />
+            </Routes>
           </div>
-          <Player/>
+        </div>
+        {/* <Player/> */}
+        <div className="absolute h-28 bottom-0 left-0 right-0 flex animate-slideup bg-gradient-to-br from-white/10 to-[#2a2a80] backdrop-blur-lg  z-10">
+          <MusicPlayer />
+        </div>
       </div>
+        : <Login />
+      }
     </div>
   );
 }
