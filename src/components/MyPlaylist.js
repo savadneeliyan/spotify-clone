@@ -21,11 +21,11 @@ function MyPlaylist() {
                         "content-Type": "application/json",
                     },
                 }
-            );
+          );
             const selectedPlaylist = {
               id: response.data.id,
               title: response?.data.name,
-              img: response?.data.images[0].url,
+              img: response?.data.images[0]?.url,
               discription: response?.data.description.startsWith("<a")
                 ? ""
                 : response?.data.description,
@@ -47,7 +47,6 @@ function MyPlaylist() {
         }
         getinitialplaylist();
     }, [token, dispatch, selectedPlaylistId])
-    
 
     return (
       <div className="playlistPage">

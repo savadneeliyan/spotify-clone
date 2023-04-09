@@ -5,7 +5,8 @@ import { reducerCases } from '../utils/Constants';
 
 function Playlists() {
 
-    const [{ token, playlists}, dispatch ] = useStateProvider();
+    const [{ token, playlists }, dispatch] =
+      useStateProvider();
     
     useEffect(() => {
         const getplaylistData = async () => {
@@ -26,13 +27,18 @@ function Playlists() {
         getplaylistData()
     }, [token, dispatch])
 
+    const changeplaylist =(selectedPlaylistId) => {
+      dispatch({ type: reducerCases.SET_PLAYLIST_ID, selectedPlaylistId });
+    };
+
+
   return (
     <div>
         <h2> playlists </h2>
           <ul>
               {
                 playlists.map(({ name, id }) => (       
-                    <li key={id}> {name} </li>
+                    <li key={id} onClick={()=> changeplaylist(id)}> {name} </li>
                 ))
               }
         </ul>
