@@ -46,7 +46,30 @@ useEffect(() => {
     }
     getuserinfo();
 
+    const getdiviceId = async () => {
+      const diviceid = await axios.get('https://api.spotify.com/v1/me/player/devices',
+      {
+        headers: {
+          Authorization: "Bearer " + token,
+          "content-Type": "application/json",
+        },
+      })
+      const deviceId = {
+        devices: diviceid.data.devices.map(
+          (item) => ({
+            id: item.id,
+            is_active:item.is_active,
+            volume_percent:item.volume_percent
+          })
+        ),
+      }
+
+      dispatch({ type: reducerCases.SET_DEVICES, devices:deviceId });
+    }
+    getdiviceId()
   }
+
+
 
   
 }, [token, dispatch]);
@@ -71,7 +94,7 @@ useEffect(() => {
           </div>
         </div>
         {/* <Player/> */}
-        <div className="absolute h-28 bottom-0 left-0 right-0 flex animate-slideup bg-gradient-to-br from-white/10 to-[#2a2a80] backdrop-blur-lg  z-10">
+        <div className="absolute h-28 bottom-0 left-0 right-0 flex animate-slideup bg-[#181818] backdrop-blur-lg  z-10">
           <MusicPlayer />
         </div>
       </div>

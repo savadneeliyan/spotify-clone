@@ -1,28 +1,55 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useStateProvider } from '../../utils/StateProvider';
 
-const Seekbar = ({ value, min, max, onInput, setSeekTime, appTime }) => {
-  // converts the time to format 0:00
-  const getTime = (time) => `${Math.floor(time / 60)}:${(`0${Math.floor(time % 60)}`).slice(-2)}`;
+const Seekbar = ({currentPlaying}) => {
+  
+  const [seekTime, setSeekTime] = useState(currentPlaying?.progress);
+  const value = currentPlaying?.progress
+
+  const getTime = (millis) => {
+    var minutes = Math.floor(millis / 60000);
+    var seconds = ((millis % 60000) / 1000).toFixed(0);
+    return minutes + ":" + (seconds < 10 ? '0' : '') + seconds
+  };
+  
+
+  const [{ token }] = useStateProvider();
+
+
+  useEffect( () => {
+    const getseekvalue = async () =>{  
+      const response = await axios.put(
+        `https://api.spotify.com/v1/me/player/seek?position_ms=${Math.round(seekTime)}`,{},
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+            "content-Type": "application/json",
+          },
+        }
+        );
+    }
+    getseekvalue()
+  }, [seekTime])
+  
+  console.log(typeof(Math.round(seekTime)))
 
   return (
     <div className="hidden sm:flex flex-row items-center">
-      <button type="button" onClick={() => setSeekTime(appTime - 5)} className="hidden lg:mr-4 lg:block text-white">
-        -
-      </button>
+      
       <p className="text-white">{value === 0 ? '0:00' : getTime(value)}</p>
+
       <input
         type="range"
         step="any"
-        value={value}
-        min={min}
-        max={max}
-        onInput={onInput}
-        className="md:block w-24 md:w-56 2xl:w-96 h-1 mx-4 2xl:mx-6 rounded-lg"
+        value={seekTime}
+        min="0"
+        max={currentPlaying?.duration}
+        onInput={(event) => setSeekTime(event.target.value)}
+        className="md:block w-24 md:w-56 2xl:w-96 h-1 mx-4 2xl:mx-6 rounded-lg cursor-pointer"
       />
-      <p className="text-white">{max === 0 ? '0:00' : getTime(max)}</p>
-      <button type="button" onClick={() => setSeekTime(appTime + 5)} className="hidden lg:ml-4 lg:block text-white">
-        +
-      </button>
+      <p className="text-white">{currentPlaying?.duration === 0 ? '0:00' : getTime(currentPlaying?.duration)}</p>
+      
     </div>
   );
 };

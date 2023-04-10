@@ -1,6 +1,11 @@
+
 import React from 'react';
 
-const Track = ({currentPlaying }) => (
+
+const Track = ({currentPlaying }) =>{
+  
+
+ return (
   <div className="flex-1 flex items-center justify-start">
     <div className={`${currentPlaying?.img ? 'animate-[spin_10s_linear_infinite]' : ''} hidden sm:block h-16 w-16 mr-4`}>
       <img src={currentPlaying?.img} alt="cover art" className="rounded-full" />
@@ -9,6 +14,7 @@ const Track = ({currentPlaying }) => (
       <p className="truncate text-white font-bold text-lg">
         {/* {activeSong?.title ? activeSong?.title : 'No active Song'} */}
         {currentPlaying ? currentPlaying.name : 'No active Song'}
+        
       </p>
       <p className="truncate text-gray-300">
         {/* {activeSong?.subtitle ? activeSong?.subtitle : 'No active Song'} */}
@@ -16,6 +22,7 @@ const Track = ({currentPlaying }) => (
       </p>
     </div>
   </div>
-);
+  )
+};
 
 export default Track;
