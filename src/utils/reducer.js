@@ -8,7 +8,9 @@ export const initialState = {
   selectedPlaylist: null,
   currentPlaying: null,
   playerState:true,
-  devices:null
+  devices:null,
+  seekbar:null,
+  owner:null
 };
 
 const reducer = (state, action) => {
@@ -59,6 +61,18 @@ const reducer = (state, action) => {
         return {
           ...state,
           devices: action.devices,
+        };
+      }
+      case reducerCases.SET_SEEKBAR: {
+        return {
+          ...state,
+          seekbar: action.seekbar,
+        };
+      }
+      case reducerCases.SET_OWNER: {
+        return {
+          ...state,
+          owner: action.owner,
         };
       }
 

@@ -55,13 +55,8 @@ useEffect(() => {
         },
       })
       const deviceId = {
-        devices: diviceid.data.devices.map(
-          (item) => ({
-            id: item.id,
-            is_active:item.is_active,
-            volume_percent:item.volume_percent
-          })
-        ),
+        id: diviceid.data.devices[0].id,
+        volumn: diviceid.data.devices[0].volume_percent
       }
 
       dispatch({ type: reducerCases.SET_DEVICES, devices:deviceId });

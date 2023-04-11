@@ -5,7 +5,7 @@ import { reducerCases } from '../utils/Constants'
 import { Link } from 'react-router-dom'
 
 function MyPlaylist() {
-    const [{ token, selectedPlaylistId, selectedPlaylist }, dispatch] = useStateProvider();
+    const [{ token, selectedPlaylistId, selectedPlaylist, owner }, dispatch] = useStateProvider();
     const mstominutes = (ms) => {
         const minutes = Math.floor(ms / 60000);
         const seconds = ((ms % 60000) / 1000).toFixed(0);
@@ -14,16 +14,19 @@ function MyPlaylist() {
     useEffect(() => {
         const getinitialplaylist = async () => {
             const response = await axios.get(
-                `https://api.spotify.com/v1/playlists/${selectedPlaylistId}`,
-                {
-                    headers: {
-                        Authorization: "Bearer " + token,
-                        "content-Type": "application/json",
-                    },
-                }
+            `https://api.spotify.com/v1/playlists/${selectedPlaylistId}`,
+            {
+                headers: {
+                    Authorization: "Bearer " + token,
+                    "content-Type": "application/json",
+                },
+            }
           );
             const selectedPlaylist = {
               id: response.data.id,
+              owner : response.data.owner.id,
+              type: response.data.type,
+              followers: response.data.followers.total,
               title: response?.data.name,
               img: response?.data.images[0]?.url,
               discription: response?.data.description.startsWith("<a")
@@ -43,10 +46,39 @@ function MyPlaylist() {
                 })
               ),
             };
+
+
+            const ownerres = await axios.get(
+              `https://api.spotify.com/v1/users/${selectedPlaylist.owner}`,
+              {
+                  headers: {
+                      Authorization: "Bearer " + token,
+                      "content-Type": "application/json",
+                  },
+              }
+            );
+            const getowner = {
+              id: ownerres.data.id,
+              followers: ownerres.data.followers.total,
+              img  :ownerres.data.images[0]?.url,
+              name: ownerres.data.name,
+            }
+            dispatch({ type: reducerCases.SET_OWNER, owner:getowner });
+
+
+
+
+
+            // console.log(selectedPlaylist)
             dispatch({ type: reducerCases.SET_PLAYLIST, selectedPlaylist });
         }
         getinitialplaylist();
+
     }, [token, dispatch, selectedPlaylistId])
+
+    const changeplay = (e) => {
+      
+    }
 
     return (
       <div className="playlistPage">
@@ -58,27 +90,30 @@ function MyPlaylist() {
                   <img src={selectedPlaylist.img} alt="" />
                 </div>
                 <div className="names-section">
-                  <span>Playlist</span>
-                  <h2>discover weekly</h2>
+                  <span>{selectedPlaylist.type}</span>
+                  <h2>{selectedPlaylist.title}</h2>
                   <p>
-                    Your weekly mixtape of fresh music. Enjoy new music and deep
-                    cuts picked for you. Updates every Monday.
+                    {selectedPlaylist.discription}
                   </p>
                   <div className="discription-container">
-                    <svg
-                      role="img"
-                      height="24"
-                      width="24"
-                      fill="#1ed760"
-                      aria-hidden="true"
-                      viewBox="0 0 24 24"
-                      data-encore-id="icon"
-                      className="Svg-sc-ytk21e-0 hyZePi"
-                    >
-                      <path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22zm5.045 15.866a.686.686 0 0 1-.943.228c-2.583-1.579-5.834-1.935-9.663-1.06a.686.686 0 0 1-.306-1.337c4.19-.958 7.785-.546 10.684 1.226a.686.686 0 0 1 .228.943zm1.346-2.995a.858.858 0 0 1-1.18.282c-2.956-1.817-7.464-2.344-10.961-1.282a.856.856 0 0 1-1.11-.904.858.858 0 0 1 .611-.737c3.996-1.212 8.962-.625 12.357 1.462a.857.857 0 0 1 .283 1.179zm.116-3.119c-3.546-2.106-9.395-2.3-12.78-1.272a1.029 1.029 0 0 1-.597-1.969c3.886-1.18 10.345-.952 14.427 1.471a1.029 1.029 0 0 1-1.05 1.77z"></path>
-                    </svg>
+                    {owner.img?
+                      <img src={owner.img} className='h-6 w-6 rounded-full' alt="" />
+                      :
+                      <svg
+                        role="img"
+                        height="24"
+                        width="24"
+                        fill="#1ed760"
+                        aria-hidden="true"
+                        viewBox="0 0 24 24"
+                        data-encore-id="icon"
+                        className="Svg-sc-ytk21e-0 hyZePi"
+                      >
+                        <path d="M12 1a11 11 0 1 0 0 22 11 11 0 0 0 0-22zm5.045 15.866a.686.686 0 0 1-.943.228c-2.583-1.579-5.834-1.935-9.663-1.06a.686.686 0 0 1-.306-1.337c4.19-.958 7.785-.546 10.684 1.226a.686.686 0 0 1 .228.943zm1.346-2.995a.858.858 0 0 1-1.18.282c-2.956-1.817-7.464-2.344-10.961-1.282a.856.856 0 0 1-1.11-.904.858.858 0 0 1 .611-.737c3.996-1.212 8.962-.625 12.357 1.462a.857.857 0 0 1 .283 1.179zm.116-3.119c-3.546-2.106-9.395-2.3-12.78-1.272a1.029 1.029 0 0 1-.597-1.969c3.886-1.18 10.345-.952 14.427 1.471a1.029 1.029 0 0 1-1.05 1.77z"></path>
+                      </svg>
+                    }
                     <p>
-                      made for <a href="">mohammed savad . </a>30 songs,about
+                       <a href={owner.id}>{owner.name} . </a> {selectedPlaylist.followers} . {selectedPlaylist.trackItems.length} songs,about
                       1hr 45 mins
                     </p>
                   </div>
@@ -146,11 +181,11 @@ function MyPlaylist() {
                 </div>
 
                 {selectedPlaylist.trackItems.map((track, i) => (
-                  <Link to={`/single/${track.id}`} key={i}>
-                    <div className="columns">
+                  
+                    <div className="columns" key={i} data-id={track.id} >
                       <div className="colums">
                         <span>{i + 1}</span>
-                        <svg
+                        <svg onClick={() =>{changeplay(track.id)}}
                           role="img"
                           height="24"
                           width="24"
@@ -175,7 +210,7 @@ function MyPlaylist() {
                       <div className="date-added">{track.addeddate}</div>
                       <div className="time">{mstominutes(track.duration)}</div>
                     </div>
-                  </Link>
+                  
                 ))}
               </div>
             </div>

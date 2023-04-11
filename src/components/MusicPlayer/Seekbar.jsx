@@ -2,11 +2,8 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useStateProvider } from '../../utils/StateProvider';
 
-const Seekbar = ({currentPlaying}) => {
-  
-  const [seekTime, setSeekTime] = useState(currentPlaying?.progress);
-  const value = currentPlaying?.progress
-
+const Seekbar = ({currentPlaying, progress, duration}) => {
+    const [seekTime, setSeekTime] = useState(progress? progress: "" );
   const getTime = (millis) => {
     var minutes = Math.floor(millis / 60000);
     var seconds = ((millis % 60000) / 1000).toFixed(0);
@@ -27,28 +24,28 @@ const Seekbar = ({currentPlaying}) => {
             "content-Type": "application/json",
           },
         }
-        );
+        )
     }
     getseekvalue()
   }, [seekTime])
   
-  console.log(typeof(Math.round(seekTime)))
 
   return (
     <div className="hidden sm:flex flex-row items-center">
       
-      <p className="text-white">{value === 0 ? '0:00' : getTime(value)}</p>
+      <p className="text-white">{(seekTime ? seekTime  : progress) === 0 ? '0:00' : getTime(progress)}</p>
 
       <input
         type="range"
         step="any"
         value={seekTime}
         min="0"
-        max={currentPlaying?.duration}
+        max={duration}
         onInput={(event) => setSeekTime(event.target.value)}
         className="md:block w-24 md:w-56 2xl:w-96 h-1 mx-4 2xl:mx-6 rounded-lg cursor-pointer"
+        disabled = {!currentPlaying}
       />
-      <p className="text-white">{currentPlaying?.duration === 0 ? '0:00' : getTime(currentPlaying?.duration)}</p>
+      <p className="text-white">{duration === 0 ? '0:00' : getTime(duration)}</p>
       
     </div>
   );
