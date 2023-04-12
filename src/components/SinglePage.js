@@ -1,10 +1,37 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ArtistSongs, BestofArtists, Lyrics, MadeForYou, Track, YourShow, discovermore, indiabest } from '../contents'
 import MusicListing from './MusicListing'
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import axios from 'axios';
+import { useStateProvider } from '../utils/StateProvider';
 
 
 function SinglePage() {
+    const [{ token, selectedPlaylist, playerState }, dispatch] = useStateProvider();
+    const [data, setdata] = useState()
+    let location = useLocation();    
+    const id = location.pathname.split("/")[2]
+    
+    useEffect(() => {
+        const getTrack = async () => {
+            const response = await axios.get(`https://api.spotify.com/v1/tracks/${id}`,
+              {
+                headers: {
+                  Authorization: "Bearer " + token,
+                  "content-Type": "application/json",
+                },
+              }
+            );
+            setdata(response?.data)
+            console.log(data)
+          }
+          getTrack()
+    }, [id])
+    
+
+
+
+
     const time = (millis) => {
         var minutes = Math.floor(millis / 60000);
         var seconds = ((millis % 60000) / 1000).toFixed(0);
@@ -23,15 +50,16 @@ function SinglePage() {
     <div className='singlepage'>
         <div className="play-list-top">
             <div className="playlist-img">
-                <img src={Track[0].album?.images[0].url} alt="" />
+                <img src={data?.album?.images[0].url} alt="" />
             </div>
             <div className="names-section">
-                <span>Playlist</span>
-                <h2>{Track[0].name}</h2>
+                <span>song</span>
+                <h2>{data?.name}</h2>
                 <div className="discription-container">
                     
                     <img className='artistImg' src={Track[0].album?.images[0].url} alt="" />
-                    <p> <a href={`/artists/${Track[0].artists[0].id}`}>{Track[0].artists[0].name} . </a>{Track[0].track_number} songs . {Track[0].album.release_date.slice(0,4)} . about { time(Track[0].duration_ms)}</p>
+                    {/* <p> <a href={`/artists/${Track[0].artists[0].id}`}>{Track[0].artists[0].name} . </a>{Track[0].track_number} songs . {Track[0].album.release_date.slice(0,4)} . about { time(Track[0].duration_ms)}</p> */}
+                    <p> <a href={`/artists/${data?.artists[0].id}`}>{data?.artists[0].name} . </a> {data?.album.release_date.slice(0,4)} . about { time(data?.duration_ms)}</p>
                 </div>
             </div>
         </div>
@@ -52,10 +80,10 @@ function SinglePage() {
             </svg>
         </div>
         <div className="profilecontainer">
-            <img src={Track[0].album?.images[0].url} alt="" />
+            <img src={data?.album?.images[0].url} alt="" />
             <div>
                 <h2>Artist</h2>
-                <h3><a href={`/artists/${Track[0].artists[0].id}`}>{Track[0].artists[0].name} </a></h3>
+                <h3><a href={`/artists/${data?.artists[0].id}`}>{data?.artists[0].name} </a></h3>
             </div>
         </div>
         <div className='single-lyrics'>
@@ -72,32 +100,46 @@ function SinglePage() {
         </div>
         
         <div className='play-list-down'>
-            {
-                ArtistSongs.data.artist.discography.singles.items.slice(0,length).map((artist,i) => (
-                    <Link to={`/track/${artist.releases.items[0].id}`} key={i}>
-                        <div className="columns">
-                            <div className="colums"><span>{i+1}</span> 
-                                <svg role="img" height="24" width="24" aria-hidden="true" className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g" viewBox="0 0 24 24" data-encore-id="icon">
-                                    <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
-                                </svg>
-                            </div>
-                            <div className="colums-container">
-                                <img src={artist.releases.items[0].coverArt.sources[0].url} alt="" />
-                                <div className="colum-content">
-                                    <h3>{artist.releases.items[0].name}</h3>
-                                </div>    
-                            </div>
-                            <div className="album-name">
-                                9854625
-                            </div>
-                            
-                            <div className="time">
-                                3:32
-                            </div>
+        {selectedPlaylist.trackItems.map((track, i) => (
+                  <Link to={`/track/${track.id}`} key={i}>
+                    <div className="columns cursor-pointer" >
+                      <div className="colums">
+                        <span>{i + 1}</span>
+                        {console.log(track)}
+                        {
+                         playerState? 
+                            <svg onClick="{() =>{changeplay(track)}}"
+                              role="img"
+                              height="24"
+                              width="24"
+                              aria-hidden="true"
+                              className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g"
+                              viewBox="0 0 24 24"
+                              data-encore-id="icon"
+                            >
+                              <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
+                            </svg>:
+                            <svg  onClick="{() =>{pause()}}" role="img" height="24" width="24" aria-hidden="true" className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g" viewBox="0 0 24 24" data-encore-id="icon">
+                              <path d="M5.7 3a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7H5.7zm10 0a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7h-2.6z"></path>
+                            </svg>
+                          } 
+                      </div>
+                      <div className="colums-container">
+                        <img src={track.image} alt="" />
+                        <div className="colum-content">
+                          <h3>{track.name}</h3>
+                          <h5>{track.artists.join(", ")}</h5>
                         </div>
-                    </Link>
-                ))
-            }
+                      </div>
+                      <div className="album-name">
+                        {track.album}
+                      </div>
+                      {/* <div className="date-added">{track.addeddate}</div> */}
+                      {/* <div className="time">{"mstominutes(track.duration)" + time(track.duration)}</div> */}
+                      <div className="time">{time(track.duration)}</div>
+                    </div>
+                  </Link>
+                ))}
            
             <div className="list-bottom">
                 <a onClick={handleShowmore} className="readmore">{readmore ? "See More" : "See Less "}</a>

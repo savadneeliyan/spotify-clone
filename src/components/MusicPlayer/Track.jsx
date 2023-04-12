@@ -4,7 +4,7 @@ import React from 'react';
 
 const Track = ({currentPlaying }) =>{
   
-
+console.log(currentPlaying)
  return (
   <div className="flex-1 flex items-center justify-start">
     <div className={`${currentPlaying?.img ? 'animate-[spin_10s_linear_infinite]' : ''} hidden sm:block h-16 w-16 mr-4`}>

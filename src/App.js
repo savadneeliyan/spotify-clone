@@ -16,6 +16,8 @@ import MusicPlayer from './components/MusicPlayer';
 import Login from './components/Login';
 import { useStateProvider } from "./utils/StateProvider";
 import { reducerCases } from "./utils/Constants";
+import Playlists from './components/Playlists';
+import MyPlaylist from './components/MyPlaylist';
 
 
 
@@ -55,8 +57,8 @@ useEffect(() => {
         },
       })
       const deviceId = {
-        id: diviceid.data.devices[0].id,
-        volumn: diviceid.data.devices[0].volume_percent
+        id: diviceid.data.devices[0]?.id,
+        volumn: diviceid.data.devices[0]?.volume_percent
       }
 
       dispatch({ type: reducerCases.SET_DEVICES, devices:deviceId });
@@ -80,7 +82,8 @@ useEffect(() => {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/music" element={<ListMusic />} />
-              <Route path="/playlist" element={<PlayListPage />} />
+              <Route path={`/playlist`} element={<MyPlaylist />} />
+              {/* <Route path="/playlist" element={<PlayListPage />} /> */}
               <Route path="/track/:id" element={<SinglePage />} />
               <Route path="/lyrics" element={<LyricsPage />} />
               <Route path="/search" element={<SearchPage />} />
@@ -88,10 +91,10 @@ useEffect(() => {
             </Routes>
           </div>
         </div>
-        {/* <Player/> */}
-        <div className="absolute h-28 bottom-0 left-0 right-0 flex animate-slideup bg-[#181818] backdrop-blur-lg  z-10">
+        <Player/>
+        {/* <div className="absolute h-28 bottom-0 left-0 right-0 flex animate-slideup bg-[#181818] backdrop-blur-lg  z-10">
           <MusicPlayer />
-        </div>
+        </div> */}
       </div>
         : <Login />
       }

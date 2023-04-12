@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useStateProvider } from '../utils/StateProvider';
 import axios from 'axios';
 import { reducerCases } from '../utils/Constants';
+import { Link } from 'react-router-dom';
 
 function Playlists() {
 
@@ -37,8 +38,10 @@ function Playlists() {
         <h2> playlists </h2>
           <ul>
               {
-                playlists.map(({ name, id }) => (       
-                    <li key={id} onClick={()=> changeplaylist(id)}> {name} </li>
+                playlists.map(({ name, id }) => (   
+                  <Link to={`/playlist`} key={id}>
+                      <li onClick={()=> changeplaylist(id)}> {name} </li>
+                  </Link>
                 ))
               }
         </ul>

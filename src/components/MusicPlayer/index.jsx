@@ -52,12 +52,12 @@ const MusicPlayer = () => {
               progress  : response?.data.progress_ms
             }
               
-              dispatch({ type: reducerCases.SET_PLAYING, currentPlaying });
-              if(response?.data.is_playing){
-                dispatch({ type: reducerCases.SET_PLAYER_STATE, playerState:false });
-              }
+            dispatch({ type: reducerCases.SET_PLAYING, currentPlaying });
+            if(response?.data.is_playing){
+              dispatch({ type: reducerCases.SET_PLAYER_STATE, playerState:false });
             }
           }
+        }
 
         getcurrentTrack();
     }, [token, dispatch])

@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useStateProvider } from '../utils/StateProvider'
 import axios from 'axios'
 import { reducerCases } from '../utils/Constants'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 function MyPlaylist() {
-    const [{ token, selectedPlaylistId, selectedPlaylist, owner }, dispatch] = useStateProvider();
+    const [{ token, selectedPlaylistId, playerState, selectedPlaylist, owner }, dispatch] = useStateProvider();
+
     const mstominutes = (ms) => {
         const minutes = Math.floor(ms / 60000);
         const seconds = ((ms % 60000) / 1000).toFixed(0);
@@ -22,6 +23,7 @@ function MyPlaylist() {
                 },
             }
           );
+          console.log(response)
             const selectedPlaylist = {
               id: response.data.id,
               owner : response.data.owner.id,
@@ -76,9 +78,55 @@ function MyPlaylist() {
 
     }, [token, dispatch, selectedPlaylistId])
 
-    const changeplay = (e) => {
+    const changeplay = async (track) => {
+      const response = await axios.put(
+        `https://api.spotify.com/v1/me/player/play`,
+        {
+          context_uri:track.comntext_uri,
+          offset: {
+            position: track.track_number -1
+          },
+          position_ms: 0
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+            "content-Type": "application/json",
+          },
+        }
+      );
+      if (response.status === 204){
+        const currentplaying = {
+          id: track.id,
+          name: track.name,
+          artists : track.artists,
+          image: track.image
+        };
+        dispatch({type:reducerCases.SET_PLAYING, currentplaying});
+        dispatch({type:reducerCases.SET_PLAYER_STATE, playerState:true})
+      }else dispatch({type:reducerCases.SET_PLAYER_STATE, playerState:true})
+    }
+
+
+    const pause = async () => {
+      await axios.put(
+        `https://api.spotify.com/v1/me/player/pause`,
+        {
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+            "content-Type": "application/json",
+          },
+        }
+      );
+      
+        dispatch({type:reducerCases.SET_PLAYER_STATE, playerState:false})
       
     }
+
+   
+    // console.log(selectedPlaylist)
 
     return (
       <div className="playlistPage">
@@ -181,21 +229,27 @@ function MyPlaylist() {
                 </div>
 
                 {selectedPlaylist.trackItems.map((track, i) => (
-                  
-                    <div className="columns" key={i} data-id={track.id} >
+                  <Link to={`/track/${track.id}`} key={i}>
+                    <div className="columns cursor-pointer" >
                       <div className="colums">
                         <span>{i + 1}</span>
-                        <svg onClick={() =>{changeplay(track.id)}}
-                          role="img"
-                          height="24"
-                          width="24"
-                          aria-hidden="true"
-                          className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g"
-                          viewBox="0 0 24 24"
-                          data-encore-id="icon"
-                        >
-                          <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
-                        </svg>
+                        {
+                         playerState? 
+                            <svg onClick={() =>{changeplay(track)}}
+                              role="img"
+                              height="24"
+                              width="24"
+                              aria-hidden="true"
+                              className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g"
+                              viewBox="0 0 24 24"
+                              data-encore-id="icon"
+                            >
+                              <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
+                            </svg>:
+                            <svg  onClick={() =>{pause()}} role="img" height="24" width="24" aria-hidden="true" className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g" viewBox="0 0 24 24" data-encore-id="icon">
+                              <path d="M5.7 3a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7H5.7zm10 0a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7h-2.6z"></path>
+                            </svg>
+                          } 
                       </div>
                       <div className="colums-container">
                         <img src={track.image} alt="" />
@@ -210,7 +264,7 @@ function MyPlaylist() {
                       <div className="date-added">{track.addeddate}</div>
                       <div className="time">{mstominutes(track.duration)}</div>
                     </div>
-                  
+                  </Link>
                 ))}
               </div>
             </div>
