@@ -23,7 +23,7 @@ function MyPlaylist() {
                 },
             }
           );
-          console.log(response)
+          // console.log(response)
             const selectedPlaylist = {
               id: response.data.id,
               owner : response.data.owner.id,

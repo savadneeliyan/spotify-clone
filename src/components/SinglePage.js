@@ -10,10 +10,16 @@ function SinglePage() {
     const [{ token, selectedPlaylist, playerState }, dispatch] = useStateProvider();
     const [data, setdata] = useState()
     let location = useLocation();    
-    const id = location.pathname.split("/")[2]
-    
+    const id = location.pathname.split("/")[2];
+    const [artist, setArtist] = useState()
+    const [artistTrack, setArtistTrack] = useState()
+    const [artistTopTrack, setArtistTopTrack] = useState()
+
     useEffect(() => {
         const getTrack = async () => {
+
+          // current track
+
             const response = await axios.get(`https://api.spotify.com/v1/tracks/${id}`,
               {
                 headers: {
@@ -23,14 +29,56 @@ function SinglePage() {
               }
             );
             setdata(response?.data)
-            console.log(data)
+           
+
+            // current artist 
+
+            const {data} = await axios.get(`https://api.spotify.com/v1/artists/${response.data?.artists[0].id}`,
+              {
+                headers: {
+                    Authorization: "Bearer " + token,
+                    "content-Type": "application/json",
+                },
+              }
+            );
+            setArtist(data)
+            
+            // artist track
+
+            const track = await axios.get(`https://api.spotify.com/v1/artists/${response.data?.artists[0].id}/albums?limit=20`,
+              {
+                headers: {
+                    Authorization: "Bearer " + token,
+                    "content-Type": "application/json",
+                },
+              }
+            );
+            // console.log("track",track)
+            setArtistTrack(track)
+
+            // artist top tracks
+
+            const topTrack = await axios.get(`https://api.spotify.com/v1/artists/${response.data?.artists[0].id}/top-tracks?market=ES`,
+              {
+                headers: {
+                    Authorization: "Bearer " + token,
+                    "content-Type": "application/json",
+                },
+              }
+            );
+            setArtistTopTrack(topTrack)
+
           }
-          getTrack()
+          
+          getTrack() 
+
+          
+          
     }, [id])
     
+    console.log( artistTrack)   
 
-
-
+    
 
     const time = (millis) => {
         var minutes = Math.floor(millis / 60000);
@@ -39,10 +87,10 @@ function SinglePage() {
       }
 
       const [readmore , setReadmore] = useState(true);
-      const [length , setlength] = useState(7);
+      const [length , setlength] = useState(5);
 
       const handleShowmore = () =>{
-        readmore ? setlength(ArtistSongs.data.artist.discography.singles.items.length) : setlength(7);
+        readmore ? setlength(selectedPlaylist.trackItems.length) : setlength(5);
         setReadmore(!readmore);
       }
     // console.log(Track)
@@ -59,7 +107,7 @@ function SinglePage() {
                     
                     <img className='artistImg' src={Track[0].album?.images[0].url} alt="" />
                     {/* <p> <a href={`/artists/${Track[0].artists[0].id}`}>{Track[0].artists[0].name} . </a>{Track[0].track_number} songs . {Track[0].album.release_date.slice(0,4)} . about { time(Track[0].duration_ms)}</p> */}
-                    <p> <a href={`/artists/${data?.artists[0].id}`}>{data?.artists[0].name} . </a> {data?.album.release_date.slice(0,4)} . about { time(data?.duration_ms)}</p>
+                    <p> <a href={`/artists/${artist?.id}`}>{artist?.name} . </a> {data?.album.release_date.slice(0,4)} . about { time(data?.duration_ms)}</p>
                 </div>
             </div>
         </div>
@@ -80,10 +128,10 @@ function SinglePage() {
             </svg>
         </div>
         <div className="profilecontainer">
-            <img src={data?.album?.images[0].url} alt="" />
+            <img src={artist?.images[0]?.url} alt="" />
             <div>
                 <h2>Artist</h2>
-                <h3><a href={`/artists/${data?.artists[0].id}`}>{data?.artists[0].name} </a></h3>
+                <h3><a href={`/artists/${artist?.id}`}>{artist?.name} </a></h3>
             </div>
         </div>
         <div className='single-lyrics'>
@@ -96,16 +144,15 @@ function SinglePage() {
         </div>
         <div className="single-bottom">
             <h3>Popular Tracks By </h3>
-            <h2>{Track[0].artists[0].name}</h2>
+            <h2>{data?.artists[0].name}</h2>
         </div>
         
         <div className='play-list-down'>
-        {selectedPlaylist.trackItems.map((track, i) => (
+        {artistTopTrack?.data?.tracks?.slice(0, length).map((track, i) => (
                   <Link to={`/track/${track.id}`} key={i}>
                     <div className="columns cursor-pointer" >
                       <div className="colums">
                         <span>{i + 1}</span>
-                        {console.log(track)}
                         {
                          playerState? 
                             <svg onClick="{() =>{changeplay(track)}}"
@@ -125,18 +172,19 @@ function SinglePage() {
                           } 
                       </div>
                       <div className="colums-container">
-                        <img src={track.image} alt="" />
+                        <img src={track.album?.images[0]?.url} alt="" />
                         <div className="colum-content">
                           <h3>{track.name}</h3>
-                          <h5>{track.artists.join(", ")}</h5>
+                          {/* <h5>{track?.artists?.map(items => ( items.name)).join(", ")}</h5> */}
                         </div>
                       </div>
                       <div className="album-name">
-                        {track.album}
+                        {/* {track.album.album_type} */}
+                        {/* {() => {getfollowers(track.id)}} */}
                       </div>
                       {/* <div className="date-added">{track.addeddate}</div> */}
                       {/* <div className="time">{"mstominutes(track.duration)" + time(track.duration)}</div> */}
-                      <div className="time">{time(track.duration)}</div>
+                      <div className="time">{time(track?.duration_ms)}</div>
                     </div>
                   </Link>
                 ))}
@@ -144,11 +192,37 @@ function SinglePage() {
             <div className="list-bottom">
                 <a onClick={handleShowmore} className="readmore">{readmore ? "See More" : "See Less "}</a>
             </div>
-            <MusicListing  title="Made for you" data={MadeForYou} />
-            <MusicListing  title="discover more" data={discovermore}/>
-            <MusicListing  title="your Shows" data={YourShow}/>
-            <MusicListing  title="india's best" data={indiabest}/>
-            <MusicListing  title="Best Of Artists" data={BestofArtists} />
+            {/* <MusicListing  title="Made for you" data={MadeForYou} /> */}
+
+
+            <div className="top-container">
+            <h2>poppular release by {artist?.name}</h2>
+            <a href={`/music/`}>Show All</a>
+        </div>
+        <div className='paylist-flex'>
+            {
+              artistTrack?.data?.items?.slice(0, 7).map((item,i)=>
+                  
+                (
+                    <Link to={`/track/${ item.id }`} key={i}>
+                      <div className='playlist-container' >
+                        <div className='playlist-img'>
+                            <img src={item.images[0].url} alt="" />
+                            <div className="play-icon">
+                                <svg role="img" height="24" width="24" aria-hidden="true" viewBox="0 0 24 24" data-encore-id="icon" className="Svg-sc-ytk21e-0 gQUQL">
+                                    <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <h2>{item.name.length > 20 ? item.name.substring(0,17)+"..." : item.name }</h2>
+                        <h2>{item.release_date.substring(0,4)} . {item.type}</h2>
+                      </div>
+                    </Link>
+                )
+              )
+            }
+        </div>
+          
         </div>
     </div>
   )
