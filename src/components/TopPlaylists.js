@@ -9,16 +9,14 @@ function TopPlaylists() {
 
     useEffect(() => {
         const getuserinfo = async () => {
-            const { data } = await axios.get(`https://api.spotify.com/v1/recommendations
-            `,
+            const { data } = await axios.get(`https://api.spotify.com/v1/recommendations`,
               {
                 headers: {
                   Authorization: "Bearer " + token,
                   "content-Type": "application/json",
                 },
               }
-            )
-            console.log(data)
+            );
         }
         getuserinfo()
     }, [])

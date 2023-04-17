@@ -2,12 +2,14 @@ import axios from 'axios';
 import React, { useState } from 'react'
 import { useEffect } from 'react'
 import { listpages } from '../contents';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import { useStateProvider } from '../utils/StateProvider';
 
-function ListMusic() {
+function ListMusic({track}) {
     const [data, setData] = useState();
-
-
+    const [{ token, selectedPlaylist, playerState }, dispatch] = useStateProvider();
+    let location = useLocation();    
+    const id = location.pathname.split("/")[2];
 
     useEffect(() => {
         
@@ -28,8 +30,23 @@ function ListMusic() {
         //       console.error(error);
         //   });
 
-    }, [])
-    console.log(listpages)
+        const getuserinfo = async () => {
+
+            const track = await axios.get(`https://api.spotify.com/v1/artists/${id}/albums?limit=50`,
+            {
+                headers: {
+                    Authorization: "Bearer " + token,
+                    "content-Type": "application/json",
+                },
+            }
+            );
+
+            setData(track.data.items)
+        }
+        getuserinfo()
+        
+    }, [id])
+
 
   return (
     <>
@@ -39,21 +56,21 @@ function ListMusic() {
         </div>
         <div className='paylist-grid'>
             {
-                listpages?.map((item,i)=>
+                data?.map((item,i)=>
                    
                     (
-                        <Link to="/playlist">
+                        <Link to={`/album/${item.id}`}>
                             <div className='playlist-container' key={i}>
                                 <div className='playlist-img'>
-                                    <img src={item.track?.album.images[0].url} alt="" />
+                                    <img src={item?.images[0]?.url} alt="" />
                                     <div className="play-icon">
                                         <svg role="img" height="24" width="24" aria-hidden="true" viewBox="0 0 24 24" data-encore-id="icon" className="Svg-sc-ytk21e-0 gQUQL">
                                             <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
                                         </svg>
                                     </div>
                                 </div>
-                                <h2>{item.track?.name}</h2>
-                                <p> {item.track?.name.length > 50 ? item.track?.name.substring(0, 50) + "..." : item.track?.name}</p>
+                                <h2>{item.name.length > 20 ? item.name.substring(0,17)+"..." : item.name }</h2>
+                                <p> {item?.album_type} . {item?.release_date.substring(0,4)}</p>
                             </div>
                         </Link> 
                     )

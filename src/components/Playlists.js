@@ -39,7 +39,7 @@ function Playlists() {
           <ul>
               {
                 playlists.map(({ name, id }) => (   
-                  <Link to={`/playlist`} key={id}>
+                  <Link to={`/playlist/${id}`} key={id}>
                       <li onClick={()=> changeplaylist(id)}> {name} </li>
                   </Link>
                 ))

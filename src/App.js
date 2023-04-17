@@ -18,6 +18,7 @@ import { useStateProvider } from "./utils/StateProvider";
 import { reducerCases } from "./utils/Constants";
 import Playlists from './components/Playlists';
 import MyPlaylist from './components/MyPlaylist';
+import SinglepagePlaylist from './components/siglepageplaylist';
 
 
 
@@ -81,8 +82,9 @@ useEffect(() => {
           <div className="contents">
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/music" element={<ListMusic />} />
-              <Route path={`/playlist`} element={<MyPlaylist />} />
+              <Route path="/music/:id" element={<ListMusic />} />
+              <Route path="/album/:id" element={<SinglepagePlaylist />} />
+              <Route path="/playlist/:id" element={<MyPlaylist />} />
               {/* <Route path="/playlist" element={<PlayListPage />} /> */}
               <Route path="/track/:id" element={<SinglePage />} />
               <Route path="/lyrics" element={<LyricsPage />} />

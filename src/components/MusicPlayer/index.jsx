@@ -180,7 +180,9 @@ const handlerepeat = async () => {
 
   return (
     <div className="relative sm:px-12 px-8 w-full flex items-center justify-between">
-      <Track currentPlaying={currentPlaying} />
+      
+        {currentPlaying ? <Track currentPlaying={currentPlaying} />  : <div className='flex-1'></div> }
+
       <div className="flex-1 flex flex-col items-center justify-center">
         <Controls
           repeat={repeat}
@@ -194,7 +196,6 @@ const handlerepeat = async () => {
           handleNextSong={handleNextSong}
         />
         <Seekbar
-         
           currentPlaying={currentPlaying}
           progress={currentPlaying?.progress}
           duration={currentPlaying?.duration}

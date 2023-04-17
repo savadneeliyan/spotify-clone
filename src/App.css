@@ -729,3 +729,7 @@ img.artistImg {
   gap: 15px;
 }
 
+
+.play-list-down .albumsgrid{
+  grid-template-columns: 15px 6fr 1fr;
+}

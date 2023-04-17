@@ -2,12 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { useStateProvider } from '../utils/StateProvider'
 import axios from 'axios'
 import { reducerCases } from '../utils/Constants'
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
-function MyPlaylist() {
+function SinglepagePlaylist() {
     const [{ token, selectedPlaylistId, playerState, selectedPlaylist, owner }, dispatch] = useStateProvider();
 
-   
+    let location = useLocation();    
+    const id = location.pathname.split("/")[2];
 
     const mstominutes = (ms) => {
         const minutes = Math.floor(ms / 60000);
@@ -17,7 +18,7 @@ function MyPlaylist() {
     useEffect(() => {
         const getinitialplaylist = async () => {
             const response = await axios.get(
-            `https://api.spotify.com/v1/playlists/${selectedPlaylistId}`,
+            `https://api.spotify.com/v1/albums/${id}`,
             {
                 headers: {
                     Authorization: "Bearer " + token,
@@ -28,46 +29,47 @@ function MyPlaylist() {
           console.log(response)
             const selectedPlaylist = {
               id: response.data.id,
-              owner : response.data.owner.id,
+              owner : "",
               type: response.data.type,
-              followers: response.data.followers.total,
+              artists: response.data?.artists?.map((artists) => artists?.name),
+              followers: response.data.followers?.total,
               title: response?.data.name,
+              date:response?.data.release_date,
               img: response?.data.images[0]?.url,
-              discription: response?.data.description.startsWith("<a")
+              discription: response?.data.description?.startsWith("<a")
                 ? ""
                 : response?.data.description,
-              trackItems: response?.data.tracks.items.map(
-                ({ track, added_at }) => ({
-                  id: track.id,
-                  addeddate: added_at.substring(0, 10),
-                  name: track.name,
-                  artists: track.artists.map((artists) => artists.name),
-                  image: track?.album?.images[0]?.url,
-                  duration: track.duration_ms,
-                  album: track.album.name,
-                  comntext_uri: track.album.uri,
-                  track_number: track.track_number,
+              trackItems: response?.data.tracks?.items?.map(
+                (track) => ({
+                  id: track?.id,
+                  // addeddate: added_at?.substring(0, 10),
+                  name: track?.name,
+                  artists: track?.artists?.map((artists) => artists?.name),
+                  duration: track?.duration_ms,
+                  album: track?.name,
+                  // comntext_uri: track?.album.uri,
+                  track_number: track?.track_number,
                 })
               ),
             };
 
 
-            const ownerres = await axios.get(
-              `https://api.spotify.com/v1/users/${selectedPlaylist.owner}`,
-              {
-                  headers: {
-                      Authorization: "Bearer " + token,
-                      "content-Type": "application/json",
-                  },
-              }
-            );
-            const getowner = {
-              id: ownerres.data.id,
-              followers: ownerres.data.followers.total,
-              img  :ownerres.data.images[0]?.url,
-              name: ownerres.data.name,
-            }
-            dispatch({ type: reducerCases.SET_OWNER, owner:getowner });
+        //     const ownerres = await axios.get(
+        //       `https://api.spotify.com/v1/users/${selectedPlaylist.owner}`,
+        //       {
+        //           headers: {
+        //               Authorization: "Bearer " + token,
+        //               "content-Type": "application/json",
+        //           },
+        //       }
+        //     );
+        //     const getowner = {
+        //       id: ownerres.data.id,
+        //       followers: ownerres.data.followers.total,
+        //       img  :ownerres.data.images[0]?.url,
+        //       name: ownerres.data.name,
+        //     }
+        //     dispatch({ type: reducerCases.SET_OWNER, owner:getowner });
 
 
 
@@ -163,10 +165,10 @@ function MyPlaylist() {
                       </svg>
                     }
                     <p>
-                       <a href={owner.id}>{owner.name} . </a> {selectedPlaylist.followers} . {selectedPlaylist.trackItems.length} songs
-                       {/* ,about
-                      1hr 45 mins */}
-                      {/* {console.log(selectedPlaylist)} */}
+                       {selectedPlaylist.artists?.join(" . ")} . {selectedPlaylist.date?.substring(0,4)} . {selectedPlaylist.trackItems.length} songs
+                       {/* ,about */}
+                       {console.log(selectedPlaylist.trackItems?.map(({duration}) => (duration)))} 
+                       
                     </p>
                   </div>
                 </div>
@@ -211,11 +213,9 @@ function MyPlaylist() {
                 </svg>
               </div>
               <div className="play-list-down">
-                <div className="headers">
+                <div className="headers albumsgrid">
                   <div className="table-row">#</div>
                   <div className="table-row">title</div>
-                  <div className="table-row">album</div>
-                  <div className="table-row">date added</div>
                   <div className="table-row">
                     <svg
                       role="img"
@@ -234,7 +234,7 @@ function MyPlaylist() {
 
                 {selectedPlaylist.trackItems.map((track, i) => (
                   <Link to={`/track/${track.id}`} key={i}>
-                    <div className="columns cursor-pointer" >
+                    <div className="columns albumsgrid cursor-pointer" >
                       <div className="colums">
                         <span>{i + 1}</span>
                         {
@@ -256,16 +256,12 @@ function MyPlaylist() {
                           } 
                       </div>
                       <div className="colums-container">
-                        <img src={track.image} alt="" />
                         <div className="colum-content">
                           <h3>{track.name}</h3>
-                          <h5>{track.artists.join(", ")}</h5>
+                          <h5>{track?.artists?.join(", ")}</h5>
                         </div>
                       </div>
-                      <div className="album-name">
-                        {track.album}
-                      </div>
-                      <div className="date-added">{track.addeddate}</div>
+                    
                       <div className="time">{mstominutes(track.duration)}</div>
                     </div>
                   </Link>
@@ -278,4 +274,4 @@ function MyPlaylist() {
     );
 }
 
-export default MyPlaylist
+export default SinglepagePlaylist

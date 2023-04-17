@@ -53,7 +53,7 @@ function SinglePage() {
                 },
               }
             );
-            // console.log("track",track)
+            console.log("id",response.data?.artists[0].id)
             setArtistTrack(track)
 
             // artist top tracks
@@ -76,7 +76,6 @@ function SinglePage() {
           
     }, [id])
     
-    console.log( artistTrack)   
 
     
 
@@ -134,14 +133,14 @@ function SinglePage() {
                 <h3><a href={`/artists/${artist?.id}`}>{artist?.name} </a></h3>
             </div>
         </div>
-        <div className='single-lyrics'>
+        {/* <div className='single-lyrics'>
             <h2>Lyrics</h2>
             {Lyrics.lyrics.lines.map((line, i)=>{
                 return <p key={i}>{line.words}</p>
             })}
             
 
-        </div>
+        </div> */}
         <div className="single-bottom">
             <h3>Popular Tracks By </h3>
             <h2>{data?.artists[0].name}</h2>
@@ -197,14 +196,14 @@ function SinglePage() {
 
             <div className="top-container">
             <h2>poppular release by {artist?.name}</h2>
-            <a href={`/music/`}>Show All</a>
+            <Link track={artistTrack} to={`/music/${artist?.id}`}>Show All</Link>
         </div>
         <div className='paylist-flex'>
             {
               artistTrack?.data?.items?.slice(0, 7).map((item,i)=>
                   
                 (
-                    <Link to={`/track/${ item.id }`} key={i}>
+                    <Link to={`/album/${ item.id }`} key={i}>
                       <div className='playlist-container' >
                         <div className='playlist-img'>
                             <img src={item.images[0].url} alt="" />

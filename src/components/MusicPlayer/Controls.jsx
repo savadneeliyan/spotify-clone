@@ -2,7 +2,8 @@ import React from 'react';
 import { MdSkipNext, MdSkipPrevious } from 'react-icons/md';
 import { BsArrowRepeat, BsFillPauseFill, BsFillPlayFill, BsShuffle } from 'react-icons/bs';
 
-const Controls = ({isplaying,repeat, handlerepeat, currentPlaying, setRepeat, shuffle, handleShuffle, currentSongs, handlePlayPause, handlePrevSong, handleNextSong }) => (
+const Controls = ({isplaying,repeat, handlerepeat, currentPlaying, shuffle, handleShuffle, handlePlayPause, handlePrevSong, handleNextSong }) => (
+  
   // <div className="flex items-center justify-around md:w-36 lg:w-52 2xl:w-80">
   //   <BsArrowRepeat size={20} color={repeat ? 'red' : 'white'} onClick={() => setRepeat((prev) => !prev)} className="hidden sm:block cursor-pointer" />
   //   {currentSongs && <MdSkipPrevious size={30} color="#FFF" className="cursor-pointer" onClick={handlePrevSong} />}
@@ -18,14 +19,14 @@ const Controls = ({isplaying,repeat, handlerepeat, currentPlaying, setRepeat, sh
   <div className="flex items-center justify-around md:w-36 lg:w-52 2xl:w-80">
     <BsShuffle size={20} color={shuffle ? '#1db954' : '#fff'} onClick={handleShuffle} className="hidden sm:block cursor-pointer" />
 
-    {currentPlaying && <MdSkipPrevious size={30} color="#FFF" className="cursor-pointer" onClick={handlePrevSong} />}
+     <MdSkipPrevious size={30} color="#FFF" className="cursor-pointer"  onClick={currentPlaying && handlePrevSong} />
     
     {isplaying ? (
       <BsFillPlayFill size={45} color="#FFF" onClick={handlePlayPause} className="cursor-pointer" />
       ) : (
       <BsFillPauseFill size={45} color="#FFF" onClick={handlePlayPause} className="cursor-pointer" />
     )}
-    {currentPlaying && <MdSkipNext size={30} color="#FFF" className="cursor-pointer" onClick={handleNextSong} />}
+    <MdSkipNext size={30} color="#FFF" className="cursor-pointer" onClick={currentPlaying && handleNextSong} />
     <BsArrowRepeat size={20} color={repeat ? '#1db954' : 'white'} onClick={handlerepeat} className="hidden sm:block cursor-pointer" />
   </div>
 
