@@ -29,6 +29,39 @@ function LikedSongs() {
         return minutes + " : " + (seconds < 10 ? "0" : "") + seconds; 
     }
 
+    const timeSince = (date) => {
+
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+        var seconds = Math.floor((new Date() - date) / 1000);
+      
+        var interval 
+      
+        if (interval > 1) {
+          return Math.floor(interval) + " years";
+        }
+        interval = seconds / 2592000;
+        if (interval > 1) {
+          return months[date.getMonth()] + " "+date.toString().substring(7, 10) + "," + date.getFullYear()
+        }
+        interval = seconds / 86400;
+        if (interval > 1) {
+          return Math.floor(interval) + " days";
+        }
+        interval = seconds / 3600;
+        if (interval > 1) {
+          return Math.floor(interval) + " hours";
+        }
+        interval = seconds / 60;
+        if (interval > 1) {
+          return Math.floor(interval) + " minutes";
+        }
+        return Math.floor(seconds) + " seconds";
+      }
+
+
+
+
 
   return (
     <div className='playlistPage'>
@@ -79,7 +112,7 @@ function LikedSongs() {
                     
                 {
                     data?.map((item,i)=> (
-                        <Link to="/single">
+                        <Link to={`/track/${item.track.id}`}>
                             <div className="columns">
                                 <div className="colums"><span>{i+1}</span> 
                                     <svg role="img" height="24" width="24" aria-hidden="true" className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g" viewBox="0 0 24 24" data-encore-id="icon">
@@ -97,7 +130,8 @@ function LikedSongs() {
                                     <a href="">{item.track?.album.name}</a>
                                 </div>
                                 <div className="date-added">
-                                    {item.added_at}
+                                    {timeSince(new Date(item?.added_at))}
+                                    
                                 </div>
                                 <div className="time">
                                     {mstominutes(item?.track.duration_ms)}

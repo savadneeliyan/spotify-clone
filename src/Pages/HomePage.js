@@ -16,6 +16,7 @@ const [data, setdata] = useState()
 const [release, setrelease] = useState()
 const [romance, setRomance] = useState()
 const [tamil, settamil] = useState()
+const [editors, seteditors] = useState()
 const [{ token }, dispatch] = useStateProvider();
   
 
@@ -61,6 +62,17 @@ const [{ token }, dispatch] = useStateProvider();
       ) 
       setrelease(newrelease.data.albums.items)  
 
+
+      const myplay = await axios.get("https://api.spotify.com/v1/browse/featured-playlists",
+          {
+              headers: {
+                  Authorization: "Bearer " + token,
+                  "content-Type": "application/json"
+              },
+          }
+      );
+      seteditors(myplay.data)
+
     }
     bollywood()
   }, [])
@@ -70,11 +82,11 @@ const [{ token }, dispatch] = useStateProvider();
   return (
     <>
       <TopPlaylists/>
+      <MusicListing id={id} title="editors.message" data={editors?.playlists.items} />
       <MusicListing id={id} title="Bollywood Hits" BollywoodHits={BollywoodHits} data={data} />
       <MusicListing id={id} title="New Releases" data={release}/>
       <MusicListing id={id} title="romance" data={romance}/>
       <MusicListing id={id} title="tamil" data={tamil}/>
-      {/* <MusicListing id={id} title="Best Of Artists" data={BestofArtists} /> */}
       {/* <MyPlaylist/> */}
     </>
   )

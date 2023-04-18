@@ -9,7 +9,7 @@ function TopPlaylists() {
         <h2>Good Afternoon</h2>
         <div className="playlistcontainer">
             
-            <Link to="playlist">
+            <Link to="/liked">
                 <div className='grid-container'>
                     <img src="https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png" alt="" />
                     <h2>Liked songs</h2>
