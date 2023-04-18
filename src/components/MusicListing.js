@@ -2,8 +2,14 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { Playlist } from '../contents';
+import { reducerCases } from '../utils/Constants';
+import { useStateProvider } from '../utils/StateProvider';
 
-function MusicListing({title}) {
+
+
+function MusicListing({title, data, BollywoodHits}) {
+    const [{ token }, dispatch] = useStateProvider();
+ 
     // const [data, setData] = useState();
     // const [link , setLink] = useState();
     const randomItems = Playlist.tracks.items.sort(() => Math.random() - 0.5);
@@ -26,37 +32,56 @@ function MusicListing({title}) {
         //   });
 
     }, [])
-    
-    
-    
+
+    const changeplaylist =(selectedPlaylistId) => {
+        dispatch({ type: reducerCases.SET_PLAYLIST_ID, selectedPlaylistId });
+      };
+
   return ( 
     <>
         <div className="top-container">
             <h2>{title}</h2>
-            <a href={`/music/`}>Show All</a>
+            <Link to={`/music/${BollywoodHits}`}>Show All</Link>
         </div>
         <div className='paylist-flex'>
             {
-                randomItems?.slice(0, 7).map((item,i)=>
-                   
-                    (
-                        <Link to={`/track/${ item.sharing_info?.share_id }`} key={i}>
+                data?.slice(0, 7).map((item,i)=> (
+                    item.album_group ? 
+                        <Link to={`/track/${ item?.id }`} key={i}>
                             <div className='playlist-container' >
                                 <div className='playlist-img'>
-                                    <img src={item.track?.album.images[0].url} alt="" />
+                                    <img src={item?.images[0].url} alt="" />
                                     <div className="play-icon">
                                         <svg role="img" height="24" width="24" aria-hidden="true" viewBox="0 0 24 24" data-encore-id="icon" className="Svg-sc-ytk21e-0 gQUQL">
                                             <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
                                         </svg>
                                     </div>
                                 </div>
-                                <h2>{item.track?.album.name.length > 20 ? item.track?.album.name.substring(0,17)+"..." : item.track?.album.name }</h2>
-                                <h2>{item.id}</h2>
-                                {item.track?.album.artists.map( (name , i)=>{
+                                <h2>{item?.name.length > 20 ? item?.name.substring(0,17)+"..." : item?.name }</h2>
+                                {item?.artists.map( (name , i)=>{
+                                return name.name                                     
+                                }
+                                ).join(", ")}
+                            </div>
+                        </Link>
+                        :
+                        <Link to={`/playlist/${ item.id }`} key={i}>
+                            <div className='playlist-container' onClick={()=> changeplaylist(item.id)} >
+                                <div className='playlist-img'>
+                                    <img src={item?.images[0].url} alt="" />
+                                    <div className="play-icon">
+                                        <svg role="img" height="24" width="24" aria-hidden="true" viewBox="0 0 24 24" data-encore-id="icon" className="Svg-sc-ytk21e-0 gQUQL">
+                                            <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <h2>{item?.name.length > 20 ? item?.name.substring(0,17)+"..." : item?.name }</h2>
+                                
+                                {item.artists?.map( (name , i)=>{
                                    return name.name + ", "                                     
                                 }
                                 )}
-                                {/* <p> {item.artist.length > 40 ? item.artist.substring(0,40)+"..." : item.artist}</p> */}
+                                <p> {item.description.length > 40 ? item.description.substring(0,40)+"..." : item.description}</p>
                             </div>
                         </Link>
                     )

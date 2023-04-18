@@ -9,7 +9,6 @@ const Seekbar = ({currentPlaying, progress, duration}) => {
     var seconds = ((millis % 60000) / 1000).toFixed(0);
     return minutes + ":" + (seconds < 10 ? '0' : '') + seconds
   };
-  console.log(progress)
 
   const [{ token }] = useStateProvider();
 

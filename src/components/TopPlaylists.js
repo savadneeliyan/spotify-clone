@@ -1,28 +1,9 @@
-import axios from 'axios'
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import { useStateProvider } from '../utils/StateProvider';
+
 
 function TopPlaylists() {
-    const [{ token }, dispatch] = useStateProvider();
-    const user_id ="31hgqhep6wg736xvcrat3cefuqsu"
-
-    useEffect(() => {
-        const getuserinfo = async () => {
-            const { data } = await axios.get(`https://api.spotify.com/v1/recommendations`,
-              {
-                headers: {
-                  Authorization: "Bearer " + token,
-                  "content-Type": "application/json",
-                },
-              }
-            );
-        }
-        getuserinfo()
-    }, [])
     
-
-
   return (
     <div className='TopPlaylist'>
         <h2>Good Afternoon</h2>

@@ -23353,3 +23353,8 @@ export const ArtistSongs = {
     }
   }
 }
+
+
+export const BollywoodHits = "0JQ5DAqbMKFHCxg5H5PtqW"
+export const Romance = "0JQ5DAqbMKFAUsdyVjCQuL"
+export const Tamil = "0JQ5DAqbMKFE33XAyDiPIr"

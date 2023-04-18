@@ -6,8 +6,7 @@ import { Link } from 'react-router-dom';
 
 function Playlists() {
 
-    const [{ token, playlists }, dispatch] =
-      useStateProvider();
+    const [{ token, playlists }, dispatch] = useStateProvider();
     
     useEffect(() => {
         const getplaylistData = async () => {
