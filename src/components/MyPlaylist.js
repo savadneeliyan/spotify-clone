@@ -127,11 +127,39 @@ function MyPlaylist() {
       
     }
 
-   
+    const timeSince = (date) => {
+
+      const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+      var seconds = Math.floor((new Date() - date) / 1000);
+    
+      var interval 
+    
+      if (interval > 1) {
+        return Math.floor(interval) + " years";
+      }
+      interval = seconds / 2592000;
+      if (interval > 1) {
+        return months[date.getMonth()] + " "+date.toString().substring(7, 10) + "," + date.getFullYear()
+      }
+      interval = seconds / 86400;
+      if (interval > 1) {
+        return Math.floor(interval) + " days";
+      }
+      interval = seconds / 3600;
+      if (interval > 1) {
+        return Math.floor(interval) + " hours";
+      }
+      interval = seconds / 60;
+      if (interval > 1) {
+        return Math.floor(interval) + " minutes";
+      }
+      return Math.floor(seconds) + " seconds";
+    }
     // console.log(selectedPlaylist)
 
     return (
-      <div className="playlistPage">
+      selectedPlaylist && <div className="playlistPage">
         {selectedPlaylist && (
           <>
             <div className="container">
@@ -265,7 +293,7 @@ function MyPlaylist() {
                       <div className="album-name">
                         {track.album}
                       </div>
-                      <div className="date-added">{track.addeddate}</div>
+                      <div className="date-added">{timeSince(new Date(track?.addeddate))}</div>
                       <div className="time">{mstominutes(track.duration)}</div>
                     </div>
                   </Link>

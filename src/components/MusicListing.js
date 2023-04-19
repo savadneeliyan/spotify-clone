@@ -7,7 +7,7 @@ import { useStateProvider } from '../utils/StateProvider';
 
 
 
-function MusicListing({title, data, BollywoodHits}) {
+function MusicListing({title, data, id, Editors, Release}) {
     const [{ token }, dispatch] = useStateProvider();
  
     // const [data, setData] = useState();
@@ -41,13 +41,16 @@ function MusicListing({title, data, BollywoodHits}) {
     <>
         <div className="top-container">
             <h2>{title}</h2>
-            <Link to={`/music/${BollywoodHits}`}>Show All</Link>
+            <Link to={`/music/${id ? id : Editors ? 'featured-playlists': Release  ?'new-releases':''}`}>Show All</Link>
+          
+            {/* <Link to={`/album/${ id }`}>Show All</Link> */}
         </div>
         <div className='paylist-flex'>
             {
                 data?.slice(0, 7).map((item,i)=> (
                     item.album_group ? 
-                        <Link to={`/track/${ item?.id }`} key={i}>
+                        <Link to={`/album/${ item?.id }`} key={i}>
+                        {/* <Link to={`/track/${ item?.id }`} key={i}> */}
                             <div className='playlist-container' >
                                 <div className='playlist-img'>
                                     <img src={item?.images[0].url} alt="" />

@@ -21,7 +21,6 @@ function LikedSongs() {
         }
         fetchlikes()
     }, [])
-    console.log(data)
 
     const mstominutes = (ms) => {
         const minutes = Math.floor(ms / 60000);
@@ -64,7 +63,7 @@ function LikedSongs() {
 
 
   return (
-    <div className='playlistPage'>
+    data && <div className='playlistPage'>
         <div className="container">
             <div className="play-list-top">
                 <div className="playlist-img">
@@ -112,7 +111,7 @@ function LikedSongs() {
                     
                 {
                     data?.map((item,i)=> (
-                        <Link to={`/track/${item.track.id}`}>
+                        <Link to={`/track/${item.track.id}`} key={i}> 
                             <div className="columns">
                                 <div className="colums"><span>{i+1}</span> 
                                     <svg role="img" height="24" width="24" aria-hidden="true" className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g" viewBox="0 0 24 24" data-encore-id="icon">

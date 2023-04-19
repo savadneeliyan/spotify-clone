@@ -83,6 +83,8 @@ useEffect(() => {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/music/:id" element={<ListMusic />} />
+              <Route path="/music/new-releases" element={<ListMusic Release />} />
+              <Route path="/music/featured-playlists" element={<ListMusic Editors />} />
               <Route path="/album/:id" element={<SinglepagePlaylist />} />
               <Route path="/playlist/:id" element={<MyPlaylist />} />
               {/* <Route path="/playlist" element={<PlayListPage />} /> */}

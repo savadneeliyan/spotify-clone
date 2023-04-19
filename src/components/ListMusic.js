@@ -5,12 +5,11 @@ import { listpages } from '../contents';
 import { Link, useLocation } from 'react-router-dom';
 import { useStateProvider } from '../utils/StateProvider';
 
-function ListMusic({track}) {
+function ListMusic({track, Release, Editors}) {
     const [data, setData] = useState();
     const [{ token, selectedPlaylist, playerState }, dispatch] = useStateProvider();
     let location = useLocation();    
-    const id = location.pathname.split("/")[2];
-
+    const id = Release || Editors ? "" :location.pathname.split("/")[2];
     useEffect(() => {
         
         // const options = {
@@ -32,20 +31,32 @@ function ListMusic({track}) {
 
         const getuserinfo = async () => {
 
-            const track = await axios.get(`https://api.spotify.com/v1/artists/${id}/albums?limit=50`,
-            {
-                headers: {
-                    Authorization: "Bearer " + token,
-                    "content-Type": "application/json",
-                },
-            }
-            );
+            // const track = await axios.get(`https://api.spotify.com/v1/artists/${id}/albums?limit=50`,
+            // {
+            //     headers: {
+            //         Authorization: "Bearer " + token,
+            //         "content-Type": "application/json",
+            //     },
+            // }
+            // );
 
-            setData(track.data.items)
+            // setData(track.data.items)
+            
+      const romancetrack = await axios.get(id ? `https://api.spotify.com/v1/browse/categories/${id}/playlists` : Release ?`https://api.spotify.com/v1/browse/new-releases` : Editors ? `https://api.spotify.com/v1/browse/featured-playlists` : '',
+        {
+            headers: {
+            Authorization: "Bearer " + token,
+            "content-Type": "application/json",
+            }, 
+        }
+        )
+        Release ? setData(romancetrack.data.albums?.items)  : setData(romancetrack.data.playlists?.items)
+        // console.log(data)
+
         }
         getuserinfo()
         
-    }, [id])
+    }, [])
 
 
   return (
@@ -59,7 +70,7 @@ function ListMusic({track}) {
                 data?.map((item,i)=>
                    
                     (
-                        <Link to={`/album/${item.id}`}>
+                        <Link to={`/album/${item.id}`} key={i}>
                             <div className='playlist-container' key={i}>
                                 <div className='playlist-img'>
                                     <img src={item?.images[0]?.url} alt="" />
@@ -69,8 +80,8 @@ function ListMusic({track}) {
                                         </svg>
                                     </div>
                                 </div>
-                                <h2>{item.name.length > 20 ? item.name.substring(0,17)+"..." : item.name }</h2>
-                                <p> {item?.album_type} . {item?.release_date.substring(0,4)}</p>
+                                <h2>{item.name.length > 20 ? item?.name.substring(0,17)+"..." : item.name }</h2>
+                                <p> {item?.album_type} . {item?.release_date?.substring(0,4)}</p>
                             </div>
                         </Link> 
                     )

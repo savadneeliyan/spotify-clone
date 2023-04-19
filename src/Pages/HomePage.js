@@ -82,11 +82,11 @@ const [{ token }, dispatch] = useStateProvider();
   return (
     <>
       <TopPlaylists/>
-      <MusicListing id={id} title="editors.message" data={editors?.playlists.items} />
-      <MusicListing id={id} title="Bollywood Hits" BollywoodHits={BollywoodHits} data={data} />
-      <MusicListing id={id} title="New Releases" data={release}/>
-      <MusicListing id={id} title="romance" data={romance}/>
-      <MusicListing id={id} title="tamil" data={tamil}/>
+      <MusicListing Editors title={editors?.message} data={editors?.playlists.items} />
+      <MusicListing id={BollywoodHits} title="Bollywood Hits" BollywoodHits={BollywoodHits} data={data} />
+      <MusicListing Release title="New Releases" data={release}/>
+      <MusicListing id={Romance} title="romance" data={romance}/>
+      <MusicListing id={Tamil} title="tamil" data={tamil}/>
       {/* <MyPlaylist/> */}
     </>
   )

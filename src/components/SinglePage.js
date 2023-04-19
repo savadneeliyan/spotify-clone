@@ -94,7 +94,7 @@ function SinglePage() {
       }
     // console.log(Track)
   return (
-    <div className='singlepage'>
+    artistTopTrack && <div className='singlepage'>
         <div className="play-list-top">
             <div className="playlist-img">
                 <img src={data?.album?.images[0].url} alt="" />

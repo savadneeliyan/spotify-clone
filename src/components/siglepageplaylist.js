@@ -6,10 +6,10 @@ import { Link, useLocation } from 'react-router-dom';
 
 function SinglepagePlaylist() {
     const [{ token, selectedPlaylistId, playerState, selectedPlaylist, owner }, dispatch] = useStateProvider();
+    const [duration, setDuration] = useState([])
 
     let location = useLocation();    
     const id = location.pathname.split("/")[2];
-
     const mstominutes = (ms) => {
         const minutes = Math.floor(ms / 60000);
         const seconds = ((ms % 60000) / 1000).toFixed(0);
@@ -26,7 +26,6 @@ function SinglepagePlaylist() {
                 },
             }
           );
-          console.log(response)
             const selectedPlaylist = {
               id: response.data.id,
               owner : "",
@@ -130,10 +129,9 @@ function SinglepagePlaylist() {
     }
 
    
-    // console.log(selectedPlaylist)
 
     return (
-      <div className="playlistPage">
+      selectedPlaylist && <div className="playlistPage">
         {selectedPlaylist && (
           <>
             <div className="container">
@@ -148,8 +146,8 @@ function SinglepagePlaylist() {
                     {selectedPlaylist.discription}
                   </p>
                   <div className="discription-container">
-                    {owner.img?
-                      <img src={owner.img} className='h-6 w-6 rounded-full' alt="" />
+                    {owner?.img?
+                      <img src={owner?.img} className='h-6 w-6 rounded-full' alt="" />
                       :
                       <svg
                         role="img"
@@ -167,7 +165,7 @@ function SinglepagePlaylist() {
                     <p>
                        {selectedPlaylist.artists?.join(" . ")} . {selectedPlaylist.date?.substring(0,4)} . {selectedPlaylist.trackItems.length} songs
                        {/* ,about */}
-                       {console.log(selectedPlaylist.trackItems?.map(({duration}) => (duration)))} 
+                       { duration + "jvhwe" } 
                        
                     </p>
                   </div>

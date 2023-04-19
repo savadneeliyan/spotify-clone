@@ -18,10 +18,12 @@ const MusicPlayer = () => {
 
   const currentIndex = ""
 
+  // console.log(currentPlaying)
+
   const [duration, setDuration] = useState(0);
   const [appTime, setAppTime] = useState(0);
   const [volume, setVolume] = useState(0.3);
-  const [repeat, setRepeat] = useState(true);
+  const [repeat, setRepeat] = useState(false);
   const [shuffle, setShuffle] = useState(false);
 
 
@@ -40,7 +42,9 @@ const MusicPlayer = () => {
                         "content-Type": "application/json",
                     },
                 }
-            );
+            ); 
+
+
           if (response.data !== "") {
             const currentPlaying = {
               id: response?.data.item.id,
