@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react'
 import { useStateProvider } from '../utils/StateProvider'
 import axios from 'axios'
 import { reducerCases } from '../utils/Constants'
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 function MyPlaylist() {
     const [{ token, selectedPlaylistId, playerState, selectedPlaylist, owner }, dispatch] = useStateProvider();
 
+    let location = useLocation();    
+    const id = location.pathname.split("/")[2];
    
 
     const mstominutes = (ms) => {
@@ -17,7 +19,7 @@ function MyPlaylist() {
     useEffect(() => {
         const getinitialplaylist = async () => {
             const response = await axios.get(
-            `https://api.spotify.com/v1/playlists/${selectedPlaylistId}`,
+            `https://api.spotify.com/v1/playlists/${selectedPlaylistId ? selectedPlaylistId : id}`,
             {
                 headers: {
                     Authorization: "Bearer " + token,
@@ -25,7 +27,7 @@ function MyPlaylist() {
                 },
             }
           );
-          // console.log(response)
+          console.log(response)
             const selectedPlaylist = {
               id: response.data.id,
               owner : response.data.owner.id,
@@ -33,6 +35,7 @@ function MyPlaylist() {
               followers: response.data.followers.total,
               title: response?.data.name,
               img: response?.data.images[0]?.url,
+              comntext_uri:response.data.uri,
               discription: response?.data.description.startsWith("<a")
                 ? ""
                 : response?.data.description,
@@ -41,10 +44,11 @@ function MyPlaylist() {
                   id: track.id,
                   addeddate: added_at.substring(0, 10),
                   name: track.name,
-                  artists: track.artists.map((artists) => artists.name),
+                  artists: track.artists,
                   image: track?.album?.images[0]?.url,
                   duration: track.duration_ms,
                   album: track.album.name,
+                  albumId: track.album.id,
                   comntext_uri: track.album.uri,
                   track_number: track.track_number,
                 })
@@ -86,7 +90,7 @@ function MyPlaylist() {
         {
           context_uri:track.comntext_uri,
           offset: {
-            position: track.track_number -1
+            position: track.track_number ? track.track_number -1 : 0
           },
           position_ms: 0
         },
@@ -105,8 +109,8 @@ function MyPlaylist() {
           image: track.image
         };
         dispatch({type:reducerCases.SET_PLAYING, currentplaying});
-        dispatch({type:reducerCases.SET_PLAYER_STATE, playerState:true})
-      }else dispatch({type:reducerCases.SET_PLAYER_STATE, playerState:true})
+        dispatch({type:reducerCases.SET_PLAYER_STATE, playerState:!playerState})
+      }else dispatch({type:reducerCases.SET_PLAYER_STATE, playerState:!playerState})
     }
 
 
@@ -123,7 +127,7 @@ function MyPlaylist() {
         }
       );
       
-        dispatch({type:reducerCases.SET_PLAYER_STATE, playerState:false})
+        dispatch({type:reducerCases.SET_PLAYER_STATE, playerState:!playerState})
       
     }
 
@@ -157,6 +161,13 @@ function MyPlaylist() {
       return Math.floor(seconds) + " seconds";
     }
     // console.log(selectedPlaylist)
+
+    const showartists = (item) =>{
+      const n =item.length
+      return item.map((name , i) => (<Link to={`/artist/${name.id}`} key={i}>{name.name} {i+1 === n ? "" :", "}</Link>)) 
+      
+    }
+
 
     return (
       selectedPlaylist && <div className="playlistPage">
@@ -194,14 +205,28 @@ function MyPlaylist() {
                        <a href={owner.id}>{owner.name} . </a> {selectedPlaylist.followers} . {selectedPlaylist.trackItems.length} songs
                        {/* ,about
                       1hr 45 mins */}
-                      {/* {console.log(selectedPlaylist)} */}
+                      {console.log(selectedPlaylist)}
                     </p>
                   </div>
                 </div>
               </div>
               <div className="play-list-center">
-                <div className="round">
-                  <svg
+                <div className="round" >
+                  {
+                    playerState? 
+                  
+                    <svg onClick={() =>{changeplay(selectedPlaylist)}}
+                      role="img"
+                      height="24"
+                      width="24"
+                      aria-hidden="true"
+                      className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g"
+                      viewBox="0 0 24 24"
+                      data-encore-id="icon"
+                    >
+                      <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
+                    </svg> :
+                  <svg onClick={() =>{pause()}}
                     role="img"
                     height="28"
                     width="28"
@@ -212,6 +237,7 @@ function MyPlaylist() {
                   >
                     <path d="M5.7 3a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7H5.7zm10 0a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7h-2.6z"></path>
                   </svg>
+                  }
                 </div>
 
                 <svg
@@ -261,8 +287,8 @@ function MyPlaylist() {
                 </div>
 
                 {selectedPlaylist.trackItems.map((track, i) => (
-                  <Link to={`/track/${track.id}`} key={i}>
-                    <div className="columns cursor-pointer" >
+                  
+                    <div className="columns cursor-pointer" key={i} >
                       <div className="colums">
                         <span>{i + 1}</span>
                         {
@@ -286,17 +312,17 @@ function MyPlaylist() {
                       <div className="colums-container">
                         <img src={track.image} alt="" />
                         <div className="colum-content">
-                          <h3>{track.name}</h3>
-                          <h5>{track.artists.join(", ")}</h5>
+                          <h3><Link to={`/track/${track.id}`}>{track.name}</Link></h3>
+
+                          <h5>{showartists(track?.artists)}</h5>
                         </div>
                       </div>
                       <div className="album-name">
-                        {track.album}
+                      <Link to={`/album/${track.albumId}`}>{track.album}</Link>
                       </div>
                       <div className="date-added">{timeSince(new Date(track?.addeddate))}</div>
                       <div className="time">{mstominutes(track.duration)}</div>
                     </div>
-                  </Link>
                 ))}
               </div>
             </div>

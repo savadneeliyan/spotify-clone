@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;700&display=swap');
+
+
 *{
   box-sizing: border-box;
 }
@@ -11,6 +14,12 @@ a{
 }
 h1,h2,h3,h4,h5,h6{
   margin: 0;
+  font-family: "Manrope";
+  font-weight: 700;
+}
+p,a , body{
+  font-family: "Manrope";
+  font-weight: 400;
 }
 /* Home.js */
 
@@ -264,8 +273,10 @@ img{
 
 /* playlist page */
 .playlist-img{
-  max-width: 180px;
-  max-height: 180px;
+  /* max-width: 180px;
+  max-height: 180px; */
+  max-width: 232px;
+  max-height: 232px;
   width: 100%;
   height: 100%;
   position: relative;
@@ -304,12 +315,12 @@ img{
   align-items: center;
 }
 .names-section span{
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 .names-section h2{
-  font-size: 48px;
+  font-size: 6em;
   text-transform: capitalize;
-  line-height: 58px;
+  line-height: normal;
   margin: 0;
 }
 img.artistImg {
@@ -732,4 +743,7 @@ img.artistImg {
 
 .play-list-down .albumsgrid{
   grid-template-columns: 15px 6fr 1fr;
+}
+.columns a:hover{
+  text-decoration: underline;
 }

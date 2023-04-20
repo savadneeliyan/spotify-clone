@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useStateProvider } from '../utils/StateProvider';
 import axios from 'axios';
+import { reducerCases } from '../utils/Constants';
 
 function LikedSongs() {
-    const [{ token }, dispatch] = useStateProvider();
+    const [{ token, playerState, selectedPlaylist }, dispatch] = useStateProvider();
     const [data, setdata] = useState()
     useEffect(() => {
       
@@ -18,9 +19,61 @@ function LikedSongs() {
                 }
             ) 
             setdata(liked.data.items)
+            console.log(liked)
         }
         fetchlikes()
     }, [])
+
+
+    const changeplay = async (track) => {
+        console.log(track)
+        const response = await axios.put(
+          `https://api.spotify.com/v1/me/player/play`,
+          {
+            context_uri:track?.comntext_uri ? track.comntext_uri : "spotify:album:5QcoO5rgE4bsin0nQIGY5S",
+            offset: {
+              position: track?.track_number ? track.track_number -1 : 0
+            },
+            position_ms: 0
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+              "content-Type": "application/json",
+            },
+          }
+        );
+        if (response.status === 204){
+          const currentplaying = {
+            id: track.id,
+            name: track.name,
+            artists : track.artists,
+            image: track.image
+          };
+          dispatch({type:reducerCases.SET_PLAYING, currentplaying});
+          dispatch({type:reducerCases.SET_PLAYER_STATE, playerState:!playerState})
+        }else dispatch({type:reducerCases.SET_PLAYER_STATE, playerState:!playerState})
+      }
+  
+  
+      const pause = async () => {
+        await axios.put(
+          `https://api.spotify.com/v1/me/player/pause`,
+          {
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+              "content-Type": "application/json",
+            },
+          }
+        );
+        
+          dispatch({type:reducerCases.SET_PLAYER_STATE, playerState:!playerState})
+        
+      }
+
+
 
     const mstominutes = (ms) => {
         const minutes = Math.floor(ms / 60000);
@@ -59,7 +112,11 @@ function LikedSongs() {
       }
 
 
-
+      const showartists = (item) =>{
+        const n =item.length
+        return item.map((name , i) => (<Link to={`/artist/${name.id}`} key={i}>{name.name} {i+1 === n ? "" :", "}</Link>)) 
+        
+      }
 
 
   return (
@@ -67,7 +124,7 @@ function LikedSongs() {
         <div className="container">
             <div className="play-list-top">
                 <div className="playlist-img">
-                    <img src="https://dailymix-images.scdn.co/v2/img/ab6761610000e5eb18045f4451e50f23177dd524/2/en/default" alt="" />
+                    <img src="	https://t.scdn.co/images/3099b3803ad9496896c43f22fe9be8c4.png" alt="" />
                 </div>
                 <div className="names-section">
                     <span>Playlist</span>
@@ -80,9 +137,32 @@ function LikedSongs() {
             </div>
             <div className="play-list-center">
                 <div className='round'>
-                    <svg role="img" height="28" width="28" aria-hidden="true" viewBox="0 0 24 24" data-encore-id="icon" className="Svg-sc-ytk21e-0 gQUQL">
-                        <path d="M5.7 3a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7H5.7zm10 0a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7h-2.6z"></path>
-                    </svg>
+                {
+                    playerState? 
+                  
+                    <svg onClick={() =>{changeplay(selectedPlaylist)}}
+                      role="img"
+                      height="24"
+                      width="24"
+                      aria-hidden="true"
+                      className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g"
+                      viewBox="0 0 24 24"
+                      data-encore-id="icon"
+                    >
+                      <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
+                    </svg> :
+                  <svg onClick={() =>{pause()}}
+                    role="img"
+                    height="28"
+                    width="28"
+                    aria-hidden="true"
+                    viewBox="0 0 24 24"
+                    data-encore-id="icon"
+                    className="Svg-sc-ytk21e-0 gQUQL"
+                  >
+                    <path d="M5.7 3a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7H5.7zm10 0a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7h-2.6z"></path>
+                  </svg>
+                  }
                 </div>
                 
                 <svg role="img" height="32" width="32" aria-hidden="true" viewBox="0 0 24 24" data-encore-id="icon" className="Svg-sc-ytk21e-0 gQUQL">
@@ -111,22 +191,38 @@ function LikedSongs() {
                     
                 {
                     data?.map((item,i)=> (
-                        <Link to={`/track/${item.track.id}`} key={i}> 
+                        
                             <div className="columns">
                                 <div className="colums"><span>{i+1}</span> 
-                                    <svg role="img" height="24" width="24" aria-hidden="true" className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g" viewBox="0 0 24 24" data-encore-id="icon">
+                                {
+                                    playerState? 
+                                    <svg onClick={() =>{changeplay(item.track)}} role="img" height="24" width="24" aria-hidden="true" className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g" viewBox="0 0 24 24" data-encore-id="icon">
                                         <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
                                     </svg>
+                                    :
+                                    <svg onClick={() =>{pause()}}
+                                      role="img"
+                                      height="28"
+                                      width="28"
+                                      aria-hidden="true"
+                                      viewBox="0 0 24 24"
+                                      data-encore-id="icon"
+                                      className="Svg-sc-ytk21e-0 gQUQL"
+                                    >
+                                      <path d="M5.7 3a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7H5.7zm10 0a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7h-2.6z"></path>
+                                    </svg>
+                                    }
                                 </div>
                                 <div className="colums-container">
                                     <img src={item.track.album.images[0].url} alt="" />
                                     <div className="colum-content">
-                                        <h3>{item.track?.name}</h3>
-                                        <h5>{item.track?.artists.map((name) => (name.name)).join(",")}</h5>
+                                    <Link to={`/track/${item.track.id}`} key={i}> <h3>{item.track?.name}</h3></Link>
+                                        <h5>{showartists(item.track?.artists)}</h5>
+                                        {/* <h5>{item.track?.artists.map((name) => (<Link to={`/artist/${name.id}`} key={i}>{name.name}</Link>))}</h5> */}
                                     </div>    
                                 </div>
                                 <div className="album-name">
-                                    <a href="">{item.track?.album.name}</a>
+                                    <Link to={`/album/${item.track?.album?.id}`}>{item.track?.album.name}</Link>
                                 </div>
                                 <div className="date-added">
                                     {timeSince(new Date(item?.added_at))}
@@ -136,7 +232,7 @@ function LikedSongs() {
                                     {mstominutes(item?.track.duration_ms)}
                                 </div>
                             </div>
-                        </Link>
+
                     ))
                 }
                 

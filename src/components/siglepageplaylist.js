@@ -43,7 +43,7 @@ function SinglepagePlaylist() {
                   id: track?.id,
                   // addeddate: added_at?.substring(0, 10),
                   name: track?.name,
-                  artists: track?.artists?.map((artists) => artists?.name),
+                  artists: track?.artists,
                   duration: track?.duration_ms,
                   album: track?.name,
                   // comntext_uri: track?.album.uri,
@@ -128,7 +128,11 @@ function SinglepagePlaylist() {
       
     }
 
-   
+    const showartists = (item) =>{
+      const n =item.length
+      return item.map((name , i) => (<Link to={`/artist/${name.id}`} key={i}>{name.name} {i+1 === n ? "" :", "}</Link>)) 
+      
+    }
 
     return (
       selectedPlaylist && <div className="playlistPage">
@@ -256,7 +260,7 @@ function SinglepagePlaylist() {
                       <div className="colums-container">
                         <div className="colum-content">
                           <h3>{track.name}</h3>
-                          <h5>{track?.artists?.join(", ")}</h5>
+                          <h5>{showartists(track?.artists)}</h5>
                         </div>
                       </div>
                     

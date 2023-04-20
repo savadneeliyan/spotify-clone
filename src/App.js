@@ -19,6 +19,7 @@ import { reducerCases } from "./utils/Constants";
 import Playlists from './components/Playlists';
 import MyPlaylist from './components/MyPlaylist';
 import SinglepagePlaylist from './components/siglepageplaylist';
+import ArtistPage from './components/ArtistPage';
 
 
 
@@ -92,6 +93,7 @@ useEffect(() => {
               <Route path="/lyrics" element={<LyricsPage />} />
               <Route path="/search" element={<SearchPage />} />
               <Route path="/liked" element={<LikedSongs />} />
+              <Route path="/artist/:id" element={<ArtistPage />} />
             </Routes>
           </div>
         </div>
