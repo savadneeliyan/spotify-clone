@@ -80,14 +80,14 @@ function SinglePage() {
 
 
     const changeplay = async (track) => {
-      console.log(track)
+      console.log(track.uri)
       const response = await axios.put(
         `https://api.spotify.com/v1/me/player/play`,
         {
           context_uri:track?.uri,
-          offset: {
-            position: track?.track_number 
-          },
+          // offset: {
+          //   position: track?.track_number 
+          // },
           position_ms: 0
         },
         {
@@ -144,7 +144,6 @@ function SinglePage() {
         readmore ? setlength(selectedPlaylist.trackItems.length) : setlength(5);
         setReadmore(!readmore);
       }
-    // console.log(Track)
   return (
     <div className='singlepage'>
         <div className="play-list-top">
@@ -164,7 +163,7 @@ function SinglePage() {
             {
                     playerState? 
                   
-                    <svg onClick={() =>{changeplay(selectedPlaylist)}}
+                    <svg onClick={() =>{changeplay(artist)}}
                       role="img"
                       height="24"
                       width="24"

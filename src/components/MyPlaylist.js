@@ -85,6 +85,7 @@ function MyPlaylist() {
     }, [token, dispatch, selectedPlaylistId])
 
     const changeplay = async (track) => {
+      console.log(track)
       const response = await axios.put(
         `https://api.spotify.com/v1/me/player/play`,
         {
