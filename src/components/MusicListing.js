@@ -8,7 +8,7 @@ import { useStateProvider } from '../utils/StateProvider';
 
 
 function MusicListing({title, data, id, Editors, Release}) {
-    const [{ token }, dispatch] = useStateProvider();
+    const [{ token, playerState }, dispatch] = useStateProvider();
  
     // const [data, setData] = useState();
     // const [link , setLink] = useState();
@@ -33,6 +33,56 @@ function MusicListing({title, data, id, Editors, Release}) {
 
     }, [])
 
+
+    const changeplay = async (track) => {
+        console.log(track)
+        const response = await axios.put(
+          `https://api.spotify.com/v1/me/player/play`,
+          {
+            context_uri:track.comntext_uri,
+            offset: {
+              position: track.track_number ? track.track_number -1 : 0
+            },
+            position_ms: 0
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+              "content-Type": "application/json",
+            },
+          }
+        );
+        if (response.status === 204){
+          const currentplaying = {
+            id: track.id,
+            name: track.name,
+            artists : track.artists,
+            image: track.image
+          };
+          dispatch({type:reducerCases.SET_PLAYING, currentplaying});
+          dispatch({type:reducerCases.SET_PLAYER_STATE, playerState:!playerState})
+        }else dispatch({type:reducerCases.SET_PLAYER_STATE, playerState:!playerState})
+      }
+  
+  
+      const pause = async () => {
+        await axios.put(
+          `https://api.spotify.com/v1/me/player/pause`,
+          {
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+              "content-Type": "application/json",
+            },
+          }
+        );
+        
+          dispatch({type:reducerCases.SET_PLAYER_STATE, playerState:!playerState})
+        
+      }
+
+
     const changeplaylist =(selectedPlaylistId) => {
         dispatch({ type: reducerCases.SET_PLAYLIST_ID, selectedPlaylistId });
       };
@@ -54,10 +104,24 @@ function MusicListing({title, data, id, Editors, Release}) {
                             <div className='playlist-container' >
                                 <div className='playlist-img'>
                                     <img src={item?.images[0].url} alt="" />
-                                    <div className="play-icon">
-                                        <svg role="img" height="24" width="24" aria-hidden="true" viewBox="0 0 24 24" data-encore-id="icon" className="Svg-sc-ytk21e-0 gQUQL">
+                                    <div className="play-icon" >
+                                    {
+                                        playerState? 
+                                            <svg onClick={() =>{changeplay(item)}}
+                                            role="img"
+                                            height="24"
+                                            width="24"
+                                            aria-hidden="true"
+                                            className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g"
+                                            viewBox="0 0 24 24"
+                                            data-encore-id="icon"
+                                            >
                                             <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606z"></path>
-                                        </svg>
+                                            </svg>:
+                                            <svg  onClick={() =>{pause()}} role="img" height="24" width="24" aria-hidden="true" className="Svg-sc-ytk21e-0 gQUQL UIBT7E6ZYMcSDl1KL62g" viewBox="0 0 24 24" data-encore-id="icon">
+                                            <path d="M5.7 3a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7H5.7zm10 0a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7h-2.6z"></path>
+                                            </svg>
+                                        } 
                                     </div>
                                 </div>
                                 <h2>{item?.name.length > 20 ? item?.name.substring(0,17)+"..." : item?.name }</h2>

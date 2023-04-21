@@ -169,7 +169,7 @@ function SinglepagePlaylist() {
                     <p>
                        {selectedPlaylist.artists?.join(" . ")} . {selectedPlaylist.date?.substring(0,4)} . {selectedPlaylist.trackItems.length} songs
                        {/* ,about */}
-                       { duration + "jvhwe" } 
+                       { duration } 
                        
                     </p>
                   </div>
@@ -235,7 +235,7 @@ function SinglepagePlaylist() {
                 </div>
 
                 {selectedPlaylist.trackItems.map((track, i) => (
-                  <Link to={`/track/${track.id}`} key={i}>
+                  
                     <div className="columns albumsgrid cursor-pointer" >
                       <div className="colums">
                         <span>{i + 1}</span>
@@ -259,14 +259,14 @@ function SinglepagePlaylist() {
                       </div>
                       <div className="colums-container">
                         <div className="colum-content">
-                          <h3>{track.name}</h3>
+                          <h3><Link to={`/track/${track.id}`} key={i}>{track.name}</Link></h3>
                           <h5>{showartists(track?.artists)}</h5>
                         </div>
                       </div>
                     
                       <div className="time">{mstominutes(track.duration)}</div>
                     </div>
-                  </Link>
+                  
                 ))}
               </div>
             </div>
