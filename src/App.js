@@ -83,6 +83,7 @@ useEffect(() => {
           <div className="contents">
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route path="/spotify-clone" element={<HomePage />} />
               <Route path="/music/:id" element={<ListMusic />} />
               <Route path="/music/new-releases" element={<ListMusic Release />} />
               <Route path="/music/featured-playlists" element={<ListMusic Editors />} />

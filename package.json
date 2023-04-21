@@ -1,7 +1,7 @@
 {
   "name": "lyrics",
   "version": "0.1.0",
-  "homepage": "https://savadneeliyan.github.io/spotify-clone",
+  "homepage": "https://savadneeliyan.github.io/spotify-clone/",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
