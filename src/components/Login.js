@@ -6,7 +6,7 @@ function Login() {
     const handleClick = () => { 
         const clientId = "fea3ebca4ca84eacaba84a6a45371090";
         // const clientId = "48b1e3e0a8f24619903d7d746820e21e";
-        const redirectUrl = "http://localhost:3000/";
+        const redirectUrl = "https://savadneeliyan.github.io/spotify-clone/";
         const apiUrl = "http://accounts.spotify.com/authorize";
         const scope = ['user-read-email', 'user-read-private', 'user-read-playback-state', 'user-modify-playback-state', 'user-read-currently-playing', 'user-read-playback-position', 'user-top-read', 'user-read-recently-played','user-library-read']
         window.location.href = `${apiUrl}?client_id=${clientId}&redirect_uri=${redirectUrl}&scope=${scope.join(" ")}&response_type=token&show_dialog=true`;
