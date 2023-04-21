@@ -100,6 +100,7 @@ const MusicPlayer = () => {
           },
       }
     );
+    console.log(response)
     if (response.data !== "") {
       const currentPlaying = {
         id: response?.data.item.id,
